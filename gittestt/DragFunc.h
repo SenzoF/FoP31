@@ -1,10 +1,7 @@
-//
-// Created by USER on 2/17/2026.
-//
+
 
 #ifndef GITTESTT_DRAGFUNC_H
 #define GITTESTT_DRAGFUNC_H
-
 
 #include "Essentials.h"
 #include "Shapes.h"
@@ -67,6 +64,5 @@ static void magnetdown(const block1& block_1 ,  block1 &block_2) {
     }
 }
 
-
-
 #endif //GITTESTT_DRAGFUNC_H
+

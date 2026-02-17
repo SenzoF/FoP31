@@ -1,6 +1,4 @@
-//
-// Created by USER on 2/17/2026.
-//
+
 
 #ifndef GITTESTT_TEXTURES_H
 #define GITTESTT_TEXTURES_H
