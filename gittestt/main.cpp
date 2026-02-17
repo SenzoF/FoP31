@@ -4,6 +4,7 @@
 #include "Essentials.h"
 #include "DragFunc.h"
 #include "Motion.h"
+#include "LookMenu.h"
 
 int main( int argc, char * argv[] )
 {
@@ -26,6 +27,8 @@ int main( int argc, char * argv[] )
     SDL_Event e;
     e.type = 0;
 
+    Uint32 currentTime = SDL_GetTicks();
+
 
     // Initialize TTF
     if (TTF_Init() == -1) {
@@ -41,6 +44,9 @@ int main( int argc, char * argv[] )
 
     //font for code blocks.
     TTF_Font* code_block = TTF_OpenFont("fonts/simple.ttf", 13);
+
+    //main say and think font
+    TTF_Font* mainsaythinkfont = TTF_OpenFont("fonts/simple.ttf", 13);
 
 
 
@@ -272,7 +278,6 @@ int main( int argc, char * argv[] )
 
     //sprites
 
-    int leaveblock=0;
 
     // mainsprite player1;
     // player1.texture = loadtexture("images/player.png", m_renderer);
@@ -403,6 +408,11 @@ int main( int argc, char * argv[] )
                 }
                 if (mouseIsInside(fourth_block, dragmouseX, dragmouseY)) {
                     turn_right_n_degree(-10,player2);
+                }
+
+                //test look menu
+                if (mouseIsInside(fourth_block, dragmouseX, dragmouseY)) {
+                    say_s_for_n_sec("Hello!",10 , player2);
                 }
             }
             if (e.type == SDL_MOUSEMOTION) {
@@ -646,6 +656,48 @@ int main( int argc, char * argv[] )
 
 
 
+        //look menu functions
+
+
+        if (player2.isSayingfor) {
+            say_s_for_n_sec_draw(m_renderer,player2 , mainsaythinkfont);
+
+        }
+
+        if (player2.isSaying) {
+            say_s_draw(m_renderer, player2, mainsaythinkfont);
+        }
+
+        if (player2.isThinkingfor) {
+            think_s_for_n_sec_draw(m_renderer,player2 , mainsaythinkfont);
+
+        }
+
+        if (player2.isThinking) {
+            think_s_draw(m_renderer, player2, mainsaythinkfont);
+
+        }
+
+
+
+        currentTime = SDL_GetTicks();
+
+        if (player2.isSayingfor) {
+            if (currentTime - player2.sayforStartTime >= player2.sayDuration) {
+
+                player2.isSayingfor = false;
+            }
+        }
+        if (player2.isThinkingfor) {
+            if (currentTime - player2.thinkforStartTime >= player2.thinkDuration) {
+                player2.isThinkingfor = false;
+
+            }
+        }
+
+
+
+
 
 
 
@@ -673,8 +725,62 @@ int main( int argc, char * argv[] )
 
 
 
+    SDL_FreeSurface(code_menu_surf2);
+    SDL_FreeSurface(costumes_menu_surf2);
+    SDL_FreeSurface(costumes_menu_surf);
+    SDL_FreeSurface(sounds_menu_surf2);
+    SDL_FreeSurface(sounds_menu_surf);
+    SDL_FreeSurface(motion2_surf);
+    SDL_FreeSurface(motion_surf);
+    SDL_FreeSurface(looks2_surf);
+    SDL_FreeSurface(looks_surf);
+    SDL_FreeSurface(sound_surf);
+    SDL_FreeSurface(sound2_surf);
+    SDL_FreeSurface(events2_surf);
+    SDL_FreeSurface(events_surf);
+    SDL_FreeSurface(control2_surf);
+    SDL_FreeSurface(control_surf);
+    SDL_FreeSurface(sensing2_surf);
+    SDL_FreeSurface(sensing_surf);
+    SDL_FreeSurface(operators2_surf);
+    SDL_FreeSurface(operators_surf);
+    SDL_FreeSurface(variables2_surf);
+    SDL_FreeSurface(variables_surf);
+    SDL_FreeSurface(my_blocks2_surf);
+    SDL_FreeSurface(my_blocks_surf);
 
 
+    SDL_DestroyTexture(code_menu_tex);
+    SDL_DestroyTexture(code_menu_tex2);
+    SDL_DestroyTexture(costumes_menu_tex);
+    SDL_DestroyTexture(costumes_menu_tex2);
+    SDL_DestroyTexture(sounds_menu_tex);
+    SDL_DestroyTexture(sounds_menu_tex2);
+    SDL_DestroyTexture(motion2_tex);
+    SDL_DestroyTexture(motion_tex);
+    SDL_DestroyTexture(looks2_tex);
+    SDL_DestroyTexture(looks_tex);
+    SDL_DestroyTexture(sound_tex);
+    SDL_DestroyTexture(sound2_tex);
+    SDL_DestroyTexture(events_tex);
+    SDL_DestroyTexture(events2_tex);
+    SDL_DestroyTexture(control_tex);
+    SDL_DestroyTexture(control2_tex);
+    SDL_DestroyTexture(sensing_tex);
+    SDL_DestroyTexture(sensing2_tex);
+    SDL_DestroyTexture(operators_tex);
+    SDL_DestroyTexture(operators2_tex);
+    SDL_DestroyTexture(variables_tex);
+    SDL_DestroyTexture(variables2_tex);
+    SDL_DestroyTexture(my_blocks_tex);
+    SDL_DestroyTexture(my_blocks2_tex);
+
+    TTF_CloseFont(menu_font_clicked);
+    TTF_CloseFont(menu_font_normal);
+    TTF_CloseFont(under_code_font);
+    TTF_CloseFont(under_code_font2);
+    TTF_CloseFont(code_block);
+    TTF_CloseFont(mainsaythinkfont);
 
 
     SDL_DestroyTexture(player2.texture);
@@ -683,6 +789,7 @@ int main( int argc, char * argv[] )
     SDL_DestroyRenderer( m_renderer );
 
 
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 

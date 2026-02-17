@@ -57,6 +57,7 @@ struct block2 {
 
 
 
+//sprites
 
 struct mainsprite {
     int x, y, w, h;
@@ -74,6 +75,25 @@ struct mainsprite {
 
 
     bool isFacingRight;
+
+
+    bool isSayingfor=false;
+    bool isSaying=false;
+    string saytext = "";
+    string sayfortext = "";
+    Uint32 sayStartTime = 0;
+    Uint32 sayforStartTime = 0;
+    Uint32 sayDuration = 0;
+
+
+    bool isThinkingfor=false;
+    bool isThinking=false;
+    string thinktext = "";
+    string thinkfortext = "";
+    Uint32 thinkStartTime = 0;
+    Uint32 thinkforStartTime = 0;
+    Uint32 thinkDuration = 0;
+
 
 
 
