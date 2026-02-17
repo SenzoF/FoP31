@@ -18,6 +18,7 @@
 #include <string>
 #include <conio.h>
 #include <cstring>
+#include <SDL2/SDL_mixer.h>
 
 using namespace std;
 

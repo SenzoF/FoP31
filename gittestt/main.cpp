@@ -5,10 +5,11 @@
 #include "DragFunc.h"
 #include "Motion.h"
 #include "LookMenu.h"
+#include "SoundMenu.h"
 
 int main( int argc, char * argv[] )
 {
-    Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER ;
+    Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO ;
     Uint32 WND_flags = SDL_WINDOW_SHOWN;
     SDL_Window * m_window;
     SDL_Renderer * m_renderer;
@@ -28,6 +29,9 @@ int main( int argc, char * argv[] )
     e.type = 0;
 
     Uint32 currentTime = SDL_GetTicks();
+
+    Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 );
+    Mix_Chunk* MeowSound1 = Mix_LoadWAV("sounds/Meow.wav");
 
 
     // Initialize TTF
@@ -410,9 +414,9 @@ int main( int argc, char * argv[] )
                     turn_right_n_degree(-10,player2);
                 }
 
-                //test look menu
+                //test sound menu
                 if (mouseIsInside(fourth_block, dragmouseX, dragmouseY)) {
-                    say_s_for_n_sec("Hello!",10 , player2);
+                    playsound(MeowSound1);
                 }
             }
             if (e.type == SDL_MOUSEMOTION) {
@@ -696,6 +700,11 @@ int main( int argc, char * argv[] )
         }
 
 
+        //sound menu function
+
+
+
+
 
 
 
@@ -783,10 +792,15 @@ int main( int argc, char * argv[] )
     TTF_CloseFont(mainsaythinkfont);
 
 
+    Mix_FreeChunk(MeowSound1);
+
+
+
     SDL_DestroyTexture(player2.texture);
     //Finalize and free resources
     SDL_DestroyWindow( m_window );
     SDL_DestroyRenderer( m_renderer );
+    Mix_CloseAudio();
 
 
     TTF_Quit();
