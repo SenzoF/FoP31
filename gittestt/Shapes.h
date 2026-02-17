@@ -1,9 +1,8 @@
-//
-// Created by ALI on 17/02/2026.
-//
+
 
 #ifndef GITTESTT_SHAPES_H
 #define GITTESTT_SHAPES_H
+
 
 #include "Essentials.h"
 const double shadow_factor = 0.7;
@@ -49,6 +48,53 @@ struct block2 {
     SDL_Color color;
     string input;
     vector<SDL_Rect> box;
+};
+
+
+
+
+
+
+//sprites
+
+struct mainsprite {
+    int x, y, w, h;
+
+
+    SDL_Texture* texture;
+    double angle=0;
+    SDL_RendererFlip flip =SDL_FLIP_NONE;
+    SDL_Point center;
+
+    void setcenter() {
+        center.x = w/2;
+        center.y = h/2;
+    }
+
+
+    bool isFacingRight;
+
+
+    bool isSayingfor=false;
+    bool isSaying=false;
+    string saytext = "";
+    string sayfortext = "";
+    Uint32 sayStartTime = 0;
+    Uint32 sayforStartTime = 0;
+    Uint32 sayDuration = 0;
+
+
+    bool isThinkingfor=false;
+    bool isThinking=false;
+    string thinktext = "";
+    string thinkfortext = "";
+    Uint32 thinkStartTime = 0;
+    Uint32 thinkforStartTime = 0;
+    Uint32 thinkDuration = 0;
+
+
+
+
 };
 
 
@@ -338,6 +384,7 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
     rect1 = {x+h/3+h/6, int(y+(h*sqrt(3) / 6))+1, h/3+1, h};
     SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
     SDL_RenderFillRect(m_renderer, &rect1);
+
     x1 = {(Sint16)(x+ h/3 + 2 * h / 3), (Sint16)(x+ h/3 + 2 * h / 3 - h/6), (Sint16)(x+ h/3 + 2 * h / 3 - h/6), (Sint16)(x+ h/3 + 2 * h / 3)};
     y1 = {(Sint16)(y), (Sint16)(y+(h*sqrt(3) / 6)) , (Sint16)(h+y+(h*sqrt(3) / 6)), (Sint16)(h+y)};
     filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);

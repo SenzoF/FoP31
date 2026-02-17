@@ -1,9 +1,9 @@
-//
-// Created by ALI on 17/02/2026.
-//
+
 
 #ifndef GITTESTT_TEXTURES_H
 #define GITTESTT_TEXTURES_H
+
+
 #include "Essentials.h"
 
 //void left_ribbon(SDL_Texture* &initial_screen ,SDL_Renderer * m_renderer, SDL_DisplayMode DM){
@@ -52,5 +52,13 @@ SDL_Color deep_orange = {255, 128, 0, 255};
 SDL_Color dark_deep_orange = {204, 102, 0, 255};
 SDL_Color pink = {255, 0, 127, 255};
 SDL_Color dark_pink = {204, 102, 102, 255};
+
+SDL_Texture* loadtexture(const string &path, SDL_Renderer *renderer) {
+    SDL_Surface* surface = IMG_Load(path.c_str());
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    return texture;
+}
 
 #endif //GITTESTT_TEXTURES_H

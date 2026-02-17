@@ -1,6 +1,4 @@
-//
-// Created by ALI on 17/02/2026.
-//
+
 
 #ifndef GITTESTT_ESSENTIALS_H
 #define GITTESTT_ESSENTIALS_H
@@ -15,6 +13,10 @@
 #include <map>
 #include <algorithm>
 #include <cmath>
+#include <string>
+#include <conio.h>
+#include <cstring>
+#include <SDL2/SDL_mixer.h>
 
 using namespace std;
 

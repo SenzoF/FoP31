@@ -1,9 +1,8 @@
-//
-// Created by ALI on 17/02/2026.
-//
+
 
 #ifndef GITTESTT_DRAGFUNC_H
 #define GITTESTT_DRAGFUNC_H
+
 #include "Essentials.h"
 #include "Shapes.h"
 
@@ -51,11 +50,19 @@ static bool IsNeighbor1(const block1& block_1 , const block1& block_2) {
     else return false;
 }
 
-static void magnet1(const block1& block_1 ,  block1 &block_2) {
-    if (IsNeighbor1(block_1,block_2)) {
+static void magnetup(const block1& block_1 ,  block1 &block_2) {
+    if ((IsNeighbor1(block_1,block_2))&&(block_2.y < block_1.y)) {
+        block_2.x = block_1.x;
+        block_2.y = block_1.y - block_1.h;
+    }
+}
+
+static void magnetdown(const block1& block_1 ,  block1 &block_2) {
+    if ((IsNeighbor1(block_1,block_2))&&(block_2.y > block_1.y)) {
         block_2.x = block_1.x;
         block_2.y = block_1.y + block_1.h;
     }
 }
 
 #endif //GITTESTT_DRAGFUNC_H
+
