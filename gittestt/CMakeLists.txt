@@ -9,7 +9,8 @@ add_executable(gittestt main.cpp
         Shapes.h
         DragFunc.h
         Motion.h
-        LookMenu.h)
+        LookMenu.h
+        SoundMenu.h)
 
 
 target_link_libraries(${PROJECT_NAME} -lconio)
