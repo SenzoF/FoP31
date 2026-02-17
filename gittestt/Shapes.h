@@ -31,7 +31,7 @@ struct RibbonButton {
 
 };
 struct block1 {
-    int x, y, w=0, h;
+    int x, y, w=100, h;
     SDL_Color color;
     string input1 = "10";
     string input2=" ";
