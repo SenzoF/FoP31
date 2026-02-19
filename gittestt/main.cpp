@@ -33,6 +33,9 @@ int main( int argc, char * argv[] ) {
 
     Uint32 currentTime = SDL_GetTicks();
 
+    Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 );
+    Mix_Chunk* MeowSound1 = Mix_LoadWAV("sounds/Meow.wav");
+
 
     // Initialize TTF
     if (TTF_Init() == -1) {
@@ -1077,6 +1080,31 @@ int main( int argc, char * argv[] ) {
     }
 
 
+    SDL_FreeSurface(code_menu_surf2);
+    SDL_FreeSurface(costumes_menu_surf2);
+    SDL_FreeSurface(costumes_menu_surf);
+    SDL_FreeSurface(sounds_menu_surf2);
+    SDL_FreeSurface(sounds_menu_surf);
+    SDL_FreeSurface(motion2_surf);
+    SDL_FreeSurface(motion_surf);
+    SDL_FreeSurface(looks2_surf);
+    SDL_FreeSurface(looks_surf);
+    SDL_FreeSurface(sound_surf);
+    SDL_FreeSurface(sound2_surf);
+    SDL_FreeSurface(events2_surf);
+    SDL_FreeSurface(events_surf);
+    SDL_FreeSurface(control2_surf);
+    SDL_FreeSurface(control_surf);
+    SDL_FreeSurface(sensing2_surf);
+    SDL_FreeSurface(sensing_surf);
+    SDL_FreeSurface(operators2_surf);
+    SDL_FreeSurface(operators_surf);
+    SDL_FreeSurface(variables2_surf);
+    SDL_FreeSurface(variables_surf);
+    SDL_FreeSurface(my_blocks2_surf);
+    SDL_FreeSurface(my_blocks_surf);
+
+
     SDL_DestroyTexture(code_menu_tex);
     SDL_DestroyTexture(code_menu_tex2);
     SDL_DestroyTexture(costumes_menu_tex);
@@ -1107,18 +1135,21 @@ int main( int argc, char * argv[] ) {
     TTF_CloseFont(under_code_font);
     TTF_CloseFont(under_code_font2);
     TTF_CloseFont(code_block);
+    TTF_CloseFont(mainsaythinkfont);
+
+
+    Mix_FreeChunk(MeowSound1);
 
 
 
-
-
-
-
-
+    SDL_DestroyTexture(player2.texture);
     //Finalize and free resources
     SDL_DestroyWindow( m_window );
     SDL_DestroyRenderer( m_renderer );
+    Mix_CloseAudio();
 
+
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
     return 0;
