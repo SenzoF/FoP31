@@ -1,10 +1,12 @@
 #include <iostream>
-#include "Control.h"
 #include "Textures.h"
 #include "Shapes.h"
 #include "Essentials.h"
 #include "DragFunc.h"
 #include "blockArrangement.h"
+#include "Motion.h"
+#include "LookMenu.h"
+#include "SoundMenu.h"
 
 int main( int argc, char * argv[] ) {
     Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER ;
@@ -29,6 +31,8 @@ int main( int argc, char * argv[] ) {
 
     SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
+    Uint32 currentTime = SDL_GetTicks();
+
 
     // Initialize TTF
     if (TTF_Init() == -1) {
@@ -44,6 +48,9 @@ int main( int argc, char * argv[] ) {
 
     //font for code blocks.
     TTF_Font* code_block = TTF_OpenFont("fonts/simple.ttf", 17);
+
+    //main say and think font
+    TTF_Font* mainsaythinkfont = TTF_OpenFont("fonts/simple.ttf", 13);
 
 
 
@@ -406,6 +413,24 @@ int main( int argc, char * argv[] ) {
 //    int dragmouseY;
 //    bool mousebl2=false;
 //    bool mousebl3=false;
+
+    //sprites
+
+
+    // mainsprite player1;
+    // player1.texture = loadtexture("images/player.png", m_renderer);
+    // player1.x = 1000;
+    // player1.y = 200;
+    // player1.w = 50;
+    // player1.h = 50;
+
+    mainsprite player2;
+    player2.texture = loadtexture("images/player.png", m_renderer);
+    player2.x = 1300;
+    player2.y = 300;
+    player2.w = 100;
+    player2.h = 100;
+    player2.setcenter();
 
     //this is where the real stuff is happening.
     //dragging variables
@@ -976,6 +1001,64 @@ int main( int argc, char * argv[] ) {
         if(isDragging){
             drawBlock1(m_renderer ,tempDraggingBlock);
         }
+
+
+
+        //sprites show box (stage)
+
+
+        // SDL_Rect playerrect1 = {player1.x, player1.y, player1.w, player1.h};
+        // SDL_RenderCopy(m_renderer,player1.texture, nullptr, &playerrect1);
+
+        if (clicked_code_menu) {
+            SDL_Rect playerrect2 = {player2.x, player2.y, player2.w, player2.h};
+            SDL_RenderCopyEx(m_renderer,player2.texture, nullptr, &playerrect2,player2.angle , &player2.center , player2.flip);
+
+        }
+
+
+
+        //look menu functions
+
+
+        if (player2.isSayingfor) {
+            say_s_for_n_sec_draw(m_renderer,player2 , mainsaythinkfont);
+
+        }
+
+        if (player2.isSaying) {
+            say_s_draw(m_renderer, player2, mainsaythinkfont);
+        }
+
+        if (player2.isThinkingfor) {
+            think_s_for_n_sec_draw(m_renderer,player2 , mainsaythinkfont);
+
+        }
+
+        if (player2.isThinking) {
+            think_s_draw(m_renderer, player2, mainsaythinkfont);
+
+        }
+
+
+
+        currentTime = SDL_GetTicks();
+
+        if (player2.isSayingfor) {
+            if (currentTime - player2.sayforStartTime >= player2.sayDuration) {
+
+                player2.isSayingfor = false;
+            }
+        }
+        if (player2.isThinkingfor) {
+            if (currentTime - player2.thinkforStartTime >= player2.thinkDuration) {
+                player2.isThinkingfor = false;
+
+            }
+        }
+
+
+        //sound menu function
 
 
 

@@ -54,6 +54,45 @@ struct block2 {
 };
 
 
+struct mainsprite {
+    int x, y, w, h;
+
+
+    SDL_Texture* texture;
+    double angle=0;
+    SDL_RendererFlip flip =SDL_FLIP_NONE;
+    SDL_Point center;
+
+    void setcenter() {
+        center.x = w/2;
+        center.y = h/2;
+    }
+
+
+    bool isFacingRight;
+
+
+    bool isSayingfor=false;
+    bool isSaying=false;
+    string saytext = "";
+    string sayfortext = "";
+    Uint32 sayStartTime = 0;
+    Uint32 sayforStartTime = 0;
+    Uint32 sayDuration = 0;
+
+
+    bool isThinkingfor=false;
+    bool isThinking=false;
+    string thinktext = "";
+    string thinkfortext = "";
+    Uint32 thinkStartTime = 0;
+    Uint32 thinkforStartTime = 0;
+    Uint32 thinkDuration = 0;
+
+
+
+
+};
 
 
 
