@@ -45,6 +45,11 @@ struct block1 {
     SDL_Rect text_box2;
     SDL_Color text_box_normalC = light_gray;
     SDL_Color text_box_focusedC = white;
+
+    bool isdrag=false;
+
+    SDL_Point topSnap;
+    SDL_Point bottomSnap;
 };
 struct block2 {
     int x, y, w, h;

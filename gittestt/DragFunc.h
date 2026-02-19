@@ -13,6 +13,9 @@ static int drag_y = 0;
 bool mouseIsInside (const block1& block1 , int x , int y) {
     return((x>= block1.x) && (x<= block1.x + block1.w) && (y>= block1.y) && (y<= block1.y + block1.h));
 }
+bool mouseIsInside2 (vector<block1> &block1 , int x , int y , int i) {
+    return((x>= block1[i].x) && (x<= block1[i].x + block1[i].w) && (y>= block1[i].y) && (y<= block1[i].y + block1[i].h));
+}
 
 static void drag1(SDL_Event& e,block1 & block1) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
@@ -63,6 +66,35 @@ static void magnetdown(const block1& block_1 ,  block1 &block_2) {
         block_2.y = block_1.y + block_1.h;
     }
 }
+
+void arrangeprogram(vector <block1>& program)
+{
+    if (program.empty())
+    {
+        return;
+    }
+    program[0].x=550;
+    program[0].y=200;
+
+    for (int i = 1; i < program.size(); i++)
+    {
+        program[i].x=program[i-1].x;
+        program[i].y=program[i-1].y+program[i-1].h;
+    }
+
+}
+
+bool checkMagnet1(block1& dragged, block1& target)
+{
+    int dx1 = abs(target.topSnap.x - dragged.bottomSnap.x);
+    int dy1 = abs(target.topSnap.y - dragged.bottomSnap.y);
+
+    int dx2 = abs(target.topSnap.x - dragged.bottomSnap.x);
+    int dy2 = abs(target.topSnap.y+target.w - dragged.bottomSnap.y);
+
+    return((dx1<25 && dy1<15)||(dx2<25 && dy2<15));
+}
+
 
 #endif //GITTESTT_DRAGFUNC_H
 
