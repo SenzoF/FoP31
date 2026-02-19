@@ -272,7 +272,6 @@ int main( int argc, char * argv[] ) {
         i.color = blue;
         i.font = code_block;
         i.opCode = "move";
-
     }
     menu_block_motion[0].opCode = "move"; menu_block_motion[0].input1 = "10"; menu_block_motion[0].input2 = " ";
     menu_block_motion[1].opCode = "turn right"; menu_block_motion[1].input1 = "15"; menu_block_motion[1].input2 = " ";
@@ -412,10 +411,10 @@ int main( int argc, char * argv[] ) {
 
 
     //temp integer
-//    int dragmouseX;
-//    int dragmouseY;
-//    bool mousebl2=false;
-//    bool mousebl3=false;
+    int dragmouseX;
+    int dragmouseY;
+    bool mousebl2=false;
+    bool mousebl3=false;
 
     //sprites
 
@@ -442,6 +441,7 @@ int main( int argc, char * argv[] ) {
     bool isDragging = false;
     int dragOffsetX = 0;
     int dragOffsetY = 0;
+    int draggingindex=-1;
     //------------------------------------------
     vector<block1> program; //every block dragged in is in here
     bool Running = true;
@@ -452,6 +452,13 @@ int main( int argc, char * argv[] ) {
     //the main loop
     //--------------------------------------------------------------------------------
     while(Running){
+
+        for (int i=0; i<program.size(); i++)
+        {
+            program[i].topSnap = {program[i].x + program[i].w/2, program[i].y};
+            program[i].bottomSnap = {program[i].x + program[i].w/2,program[i].y + program[i].h};
+        }
+
         SDL_GetMouseState(&curser.x, &curser.y);
         while(SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)Running = false;
@@ -510,24 +517,21 @@ int main( int argc, char * argv[] ) {
                     if (pointInRibbonButton(&curser, &my_blocks)) {
                         clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = true;
                     }
-//
-//                    dragmouseX = e.button.x;
-//                    dragmouseY = e.button.y;
-//
-//                    if (mouseIsInside(second_block, dragmouseX, dragmouseY)) {
-//                        dragging = true;
-//                        drag_x = dragmouseX-second_block.x;
-//                        drag_y = dragmouseY-second_block.y;
-//                        mousebl2 = true;
-//
-//                    }
-//                    if (mouseIsInside(third_block, dragmouseX, dragmouseY)) {
-//                        dragging = true;
-//                        drag_x = dragmouseX-third_block.x;
-//                        drag_y = dragmouseY-third_block.y;
-//
-//                        mousebl3 = true;
-//                    }
+
+                    dragmouseX = e.button.x;
+                    dragmouseY = e.button.y;
+
+                    for(int i=0; i < program.size(); i++) {
+                        if (mouseIsInside2(program, dragmouseX, dragmouseY,i)) {
+                            dragging = true;
+                            drag_x = dragmouseX-program[i].x;
+                            drag_y = dragmouseY-program[i].y;
+                            mousebl2 = true;
+                            program[i].isdrag = true;
+                            draggingindex= i;
+
+                        }
+                    }
 
                     //writing in the boxes-----------------------------------------
 
@@ -642,7 +646,32 @@ int main( int argc, char * argv[] ) {
                 if(isDragging){
                     SDL_Point dropPoint = {tempDraggingBlock.x, tempDraggingBlock.y};
                     if(SDL_PointInRect(&dropPoint, &blocking_system[0])){
-                        program.push_back(tempDraggingBlock);
+                        bool snap = false;
+                        if (program.empty())
+                        {
+                            program.push_back(tempDraggingBlock);
+                        }
+                        else
+                        {
+                            for (int i=0; i<program.size(); i++)
+                            {
+                                block1 &b = program[i];
+
+                                int distY1 = abs(tempDraggingBlock.y - b.y-b.h);
+
+                                if (distY1 < 15)
+                                {
+                                    program.insert(program.begin()+i+1, tempDraggingBlock);
+                                    snap = true;
+                                    break;
+                                }
+                            }
+                            if (!snap)
+                            {
+                                program.push_back(tempDraggingBlock);
+                            }
+                        }
+                        // arrangeprogram(program);
                     }
                     isDragging = false;
                 }
@@ -737,35 +766,63 @@ int main( int argc, char * argv[] ) {
                 }
             }
             // ----------------------------------------------------------------------------
+            if (e.type == SDL_MOUSEBUTTONUP) {
+                if (e.button.button == SDL_BUTTON_LEFT) {
+                    dragging = false;
+                    mousebl2 = false;
+                    mousebl3 = false;
+                    isDragging = false;
+
+                    for (int i=0;i<program.size();i++)
+                    {
+                        if (program[i].isdrag)
+                        {
+                            program[i].isdrag=false;
+                        }
+                    }
+                    draggingindex=-1;
+                }
+            }
+            if (e.type == SDL_MOUSEMOTION) {
+                if (dragging&&mousebl2) {
+                    for (int i=0; i<program.size(); i++)
+                    {
+                        if (program[i].isdrag)
+                        {
+                            program[i].x = e.motion.x-drag_x;
+                            program[i].y = e.motion.y-drag_y;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            for (int i=0; i<program.size(); i++)
+            {
+                if (program[i].x < blocking_system[0].x)
+                {
+                    program.erase(program.begin()+i);
+                }
+                if (program[i].y < blocking_system[0].y)
+                {
+                    program.erase(program.begin()+i);
+
+                }
+                if (program[i].x+program[i].w > blocking_system[1].x+blocking_system[0].w)
+                {
+                    program.erase(program.begin()+i);
+
+                }
+                if (program[i].y > blocking_system[1].y+blocking_system[0].h)
+                {
+                    program.erase(program.begin()+i);
+
+                }
+            }
+
         }
-
-
-
-
-//            if (e.type == SDL_MOUSEBUTTONUP) {
-//                if (e.button.button == SDL_BUTTON_LEFT) {
-//                    dragging = false;
-//                    mousebl2 = false;
-//                    mousebl3 = false;
-//                }
-//            }
-//            if (e.type == SDL_MOUSEMOTION) {
-//                if (dragging&&mousebl2) {
-//                    second_block.x = e.motion.x-drag_x;
-//                    second_block.y = e.motion.y-drag_y;
-//                }
-//                if (dragging&&mousebl3) {
-//                    third_block.x = e.motion.x-drag_x;
-//                    third_block.y = e.motion.y-drag_y;
-//                }
-//            }
-
-
-
-
-
-
-
 
 
 
@@ -773,6 +830,17 @@ int main( int argc, char * argv[] ) {
 
         //magnet
 //        magnet1(second_block, third_block);
+
+        for (int i=0; i<program.size(); i++)
+        {
+            for (int j=0;j<program.size();j++)
+            {
+                magnetdown(program[j],program[i]);
+                magnetup(program[j],program[i]);
+            }
+        }
+
+
 
 
 
