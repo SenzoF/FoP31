@@ -45,6 +45,10 @@ int main( int argc, char * argv[] ) {
     TTF_Font* menu_font_normal = TTF_OpenFont("fonts/menu_font.ttf", 23);
     TTF_Font* menu_font_clicked = TTF_OpenFont("fonts/menu_font.ttf", 25);
 
+    //saving ribbon font
+    TTF_Font* saving_ribbon = TTF_OpenFont("fonts/main_icon.ttf", 37);
+
+
     //for under code menu ribbon buttons
     TTF_Font* under_code_font = TTF_OpenFont("fonts/simple.ttf", 12);
     TTF_Font* under_code_font2 = TTF_OpenFont("fonts/simple.ttf", 15);
@@ -121,6 +125,9 @@ int main( int argc, char * argv[] ) {
     my_blocks.vertices();
     RibbonButton my_blocks2 = {(code_menu_button.w-20)/2, int((initial_y + 8  * dButton) * enl) ,int(r*co * enl)};
     my_blocks2.vertices();
+
+
+
 
 
 
@@ -224,6 +231,19 @@ int main( int argc, char * argv[] ) {
     SDL_Texture* my_blocks2_tex = SDL_CreateTextureFromSurface(m_renderer, my_blocks2_surf);
     SDL_Rect my_blocks2_text_rect = {my_blocks2.x-my_blocks2_surf->w/2, my_blocks2.y-my_blocks2_surf->h/2, my_blocks2_surf->w, my_blocks2_surf->h};
 
+    //saving ribbon and the rest
+    SDL_Surface* my_scratch_sur = TTF_RenderText_Blended(saving_ribbon, "Hexacratch", light_blue);
+    SDL_Texture* my_scratch_tex = SDL_CreateTextureFromSurface(m_renderer, my_scratch_sur);
+    SDL_Rect my_scratch_rect = {25, 10, my_scratch_sur->w, my_scratch_sur->h};
+
+
+
+
+
+
+
+
+
 
 
 
@@ -232,11 +252,22 @@ int main( int argc, char * argv[] ) {
     SDL_FreeSurface(code_menu_surf);
 
 
-    //left ribbon to be drawn.
+
     int n=5;
+    //saving menu rects
+    vector<SDL_Rect> save_ribbon(n);
+    for(int i=0; i<n; i++){
+        save_ribbon[i] = {i, i, DM.w - 2 * i, 20 + my_scratch_sur->h - 2 * i};
+    }
+    //left ribbon to be drawn.
     vector<SDL_Rect> left_ribbon(n);
     for(int i=0; i<n; i++){
         left_ribbon[i] = {code_menu_button.x+i, code_menu_button.y+i-3 + code_menu_button.h + 3, code_menu_button.w-20-2 * i, DM.h - left_ribbon[i].h};
+    }
+    //behind main buttons rects
+    vector<SDL_Rect> behind_buttons(n);
+    for(int i=0; i<n; i++){
+        behind_buttons[i] = {save_ribbon[i].x, save_ribbon[0].h,  DM.w - 2 * i, abs(left_ribbon[0].y - save_ribbon[0].h)};
     }
     //blocks scrolling menu
     vector<SDL_Rect> blocks_scrolling_menu(n);
@@ -252,6 +283,45 @@ int main( int argc, char * argv[] ) {
     for(int i=0; i<n; i++){
         sprite_property[i] = {blocking_system[0].w + blocking_system[0].x+i + DM.w / 150, code_menu_button.y+i + code_menu_button.h , DM.w - (sprite_property[i].x) - i, blocking_system[i].h / 2 - 2 * i};
     }
+    vector<SDL_Rect> under_sprite(n);
+    for(int i=0; i<n; i++){
+        under_sprite[i] = {sprite_property[0].x + i, sprite_property[0].y + sprite_property[0].h + i, DM.w - under_sprite[i].x - 2 * i, DM.w - under_sprite[i].y - 2 * i};
+    }
+
+
+
+    //rest of the fonts also here
+
+    //under sprite territory fonts and stuff
+
+    //choosing sprite
+    //text
+    SDL_Surface* sprite_choose_sur = TTF_RenderText_Blended(code_block, "Sprite", black);
+    SDL_Texture* sprite_choose_tex = SDL_CreateTextureFromSurface(m_renderer, sprite_choose_sur);
+    SDL_Rect sprite_choose_rect = {under_sprite[0].x + 50, under_sprite[0].y + 50, sprite_choose_sur->w, sprite_choose_sur->h};
+    //input box
+    SDL_Rect sprite_name_input = {sprite_choose_rect.x + 50, sprite_choose_rect.y, 300, sprite_choose_rect.h};
+    string sprite_name;
+
+    SDL_Surface* sprite_name_sur = TTF_RenderText_Blended(code_block, "Sprite1", black);
+    SDL_Texture* sprite_name_tex = SDL_CreateTextureFromSurface(m_renderer, sprite_name_sur);
+    SDL_Rect sprite_name_rect = {sprite_name_input.x, sprite_name_input.y, sprite_name_sur->w, sprite_name_sur->h};
+
+
+
+
+
+
+    //saving ribbon buttons
+    //green go
+    double execution_rect_coef = 3.5;
+    SDL_Rect execution_rect1 = {sprite_property[0].x, behind_buttons[0].y + behind_buttons[0].h / 3, int(10 * execution_rect_coef), int(5 * execution_rect_coef)};
+    SDL_Rect execution_rect2 = {sprite_property[0].x, behind_buttons[0].y + behind_buttons[0].h / 3, int(2 * execution_rect_coef), int(10 * execution_rect_coef)};
+    //red stop
+    Circle terminate_circle = {execution_rect1.x + 60, execution_rect2.y + execution_rect2.h/2 + 1, execution_rect2.h/2};
+
+
+
 
     //defining blocks
 
@@ -448,6 +518,10 @@ int main( int argc, char * argv[] ) {
     bool clicked_code_menu = true, clicked_costumes_menu = false, clicked_sounds_menu = false;
     bool clicked_motion=true, clicked_looks=false, clicked_sound=false, clicked_events=false, clicked_control=false, clicked_sensing=false, clicked_operators=false, clicked_variables=false, clicked_my_blocks = false;
     int activeBlockIndex = -1, activeBoxSide = 0;
+    bool clicked_sprite_name_box = false;
+
+    //flag clicking
+    bool clicked_flag = false, clicked_redCircle = false;
     //--------------------------------------------------------------------------------
     //the main loop
     //--------------------------------------------------------------------------------
@@ -630,8 +704,32 @@ int main( int argc, char * argv[] ) {
                             }
                         }
                     }
+                    if(SDL_PointInRect(&curser, &execution_rect1) or SDL_PointInRect(&curser, &execution_rect2)){
+                        clicked_flag = !clicked_flag;
+                    }
+                    if(PointInCircle(&curser, &terminate_circle)){
+                        clicked_redCircle = !clicked_redCircle;
+                    }
+
+                    //for entering sprites name
+                    if(SDL_PointInRect(&curser, &sprite_name_rect)){
+                        clicked_sprite_name_box = true;
+                        SDL_StartTextInput();
+                    }
+                    else{
+                        clicked_sprite_name_box = false;
+                        SDL_StopTextInput();
+                    }
+
+
+
+
+
+
                 }
             }
+
+
 
             if(e.type == SDL_MOUSEMOTION and isDragging){
                 tempDraggingBlock.x = curser.x - dragOffsetX;
@@ -737,7 +835,107 @@ int main( int argc, char * argv[] ) {
                 }
             }
             // ----------------------------------------------------------------------------
+            //for taking sprites name
+            if(clicked_sprite_name_box){
+                if(e.type == SDL_KEYDOWN){
+                    if(e.key.keysym.sym == SDLK_BACKSPACE and !sprite_name.empty()){
+                        sprite_name.pop_back();
+                    }
+                }
+                if(e.type == SDL_TEXTINPUT){
+
+                    if(sprite_name.length() < 15){
+                        sprite_name += e.text.text;
+                    }
+
+
+
+
+                }
+
+
+            }
+
+
+
         }
+
+        if(clicked_sprite_name_box){
+            SDL_FreeSurface(sprite_name_sur);
+            SDL_DestroyTexture(sprite_name_tex);
+            const char * display_text = sprite_name.empty() ? " " : sprite_name.c_str();
+
+            sprite_name_sur = TTF_RenderText_Blended(code_block, display_text, black);
+            sprite_name_tex = SDL_CreateTextureFromSurface(m_renderer, sprite_name_sur);
+            sprite_name_rect.w = sprite_name_sur->w;
+            sprite_name_rect.h = sprite_name_sur->h;
+        }
+        SDL_RenderCopy(m_renderer, sprite_name_tex, nullptr, &sprite_name_rect);
+
+        //first rendering the total bkgr
+        SDL_SetRenderDrawColor(m_renderer, 50, 50, 50, 255);
+        SDL_RenderClear(m_renderer);
+
+
+
+
+
+
+
+
+
+
+        //rendering save ribbon first
+        //drawing save ribbon
+        for(int i=0; i<n; i++){
+            SDL_SetRenderDrawColor(m_renderer, 0, 87+5*i, 87+5*i, 255);
+            SDL_RenderFillRect(m_renderer, &save_ribbon[i]);
+        }
+        //final touch for saving menu
+        SDL_SetRenderDrawColor(m_renderer, 150, 150, 150, 150);
+        SDL_RenderFillRect(m_renderer, &save_ribbon[4]);
+        SDL_RenderCopy(m_renderer, my_scratch_tex, nullptr, &my_scratch_rect);
+
+        //drawing behind button ribbon
+        for(int i=0; i<n; i++){
+            SDL_SetRenderDrawColor(m_renderer, 0, 87+5*i, 87+5*i, 255);
+            SDL_RenderFillRect(m_renderer, &behind_buttons[i]);
+        }
+        SDL_SetRenderDrawColor(m_renderer, light_gray.r, light_gray.g, light_gray.b, light_gray.a);
+        SDL_RenderFillRect(m_renderer, &behind_buttons[4]);
+        //green flag.
+        if(clicked_flag) SDL_SetRenderDrawColor(m_renderer, deep_orange.r, deep_orange.g, deep_orange.b, deep_orange.a);
+        else SDL_SetRenderDrawColor(m_renderer, dark_green.r, dark_green.g, dark_green.b, dark_green.a);
+        SDL_RenderFillRect(m_renderer, &execution_rect1); SDL_RenderFillRect(m_renderer, &execution_rect2);
+        //red stop circle
+        if(clicked_redCircle){
+            aaFilledCircleRGBA(m_renderer, terminate_circle.x, terminate_circle.y, terminate_circle.r, purple.r, purple.g, purple.b, purple.a);
+        }
+        else {
+            aaFilledCircleRGBA(m_renderer, terminate_circle.x, terminate_circle.y, terminate_circle.r, 255, 0, 0, 255);
+
+        }
+
+        SDL_RenderCopy(m_renderer, sprite_choose_tex, nullptr, &sprite_choose_rect);
+
+
+        //sprite property and under it
+        for(int i=0; i<n; i++){
+            SDL_SetRenderDrawColor(m_renderer, 0, 87+5*i, 87+5*i, 255);
+            SDL_RenderFillRect(m_renderer, &sprite_property[i]);
+            SDL_RenderFillRect(m_renderer, &under_sprite[i]);
+        }
+        SDL_SetRenderDrawColor(m_renderer, 240, 240, 240, 255);
+        SDL_RenderFillRect(m_renderer, &sprite_property[n-1]);
+        SDL_SetRenderDrawColor(m_renderer, 220, 220, 220, 255);
+        SDL_RenderFillRect(m_renderer, &under_sprite[n-1]);
+
+
+
+
+
+
+
 
 
 
@@ -776,8 +974,7 @@ int main( int argc, char * argv[] ) {
 
 
 
-        SDL_SetRenderDrawColor(m_renderer, 50, 50, 50, 255);
-        SDL_RenderClear(m_renderer);
+
 
 
 
@@ -820,16 +1017,22 @@ int main( int argc, char * argv[] ) {
                 SDL_RenderFillRect(m_renderer, &left_ribbon[i]);
                 SDL_RenderFillRect(m_renderer, &blocks_scrolling_menu[i]);
                 SDL_RenderFillRect(m_renderer, &blocking_system[i]);
-                SDL_RenderFillRect(m_renderer, &sprite_property[i]);
+
             }
             //final layer of white and near white (for scrolling menu) on the menus.
             SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
             SDL_RenderFillRect(m_renderer, &left_ribbon[n-1]);
             SDL_SetRenderDrawColor(m_renderer, 220, 220, 220, 255);
             SDL_RenderFillRect(m_renderer, &blocks_scrolling_menu[n-1]);
-            SDL_SetRenderDrawColor(m_renderer, 240, 240, 240, 255);
+            SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
             SDL_RenderFillRect(m_renderer, &blocking_system[n-1]);
-            SDL_RenderFillRect(m_renderer, &sprite_property[n-1]);
+
+
+
+
+
+
+
 
 
 
@@ -993,9 +1196,7 @@ int main( int argc, char * argv[] ) {
 
 
         //rendering program (the main vector)
-        for(auto &b : program){
-            drawBlock1(m_renderer, b);
-        }
+
 
 
 
@@ -1013,11 +1214,11 @@ int main( int argc, char * argv[] ) {
         // SDL_Rect playerrect1 = {player1.x, player1.y, player1.w, player1.h};
         // SDL_RenderCopy(m_renderer,player1.texture, nullptr, &playerrect1);
 
-        if (clicked_code_menu) {
-            SDL_Rect playerrect2 = {player2.x, player2.y, player2.w, player2.h};
-            SDL_RenderCopyEx(m_renderer,player2.texture, nullptr, &playerrect2,player2.angle , &player2.center , player2.flip);
 
-        }
+        SDL_Rect playerrect2 = {player2.x, player2.y, player2.w, player2.h};
+        SDL_RenderCopyEx(m_renderer,player2.texture, nullptr, &playerrect2,player2.angle , &player2.center , player2.flip);
+
+
 
 
 
@@ -1075,6 +1276,8 @@ int main( int argc, char * argv[] ) {
 
 
 
+
+
         SDL_RenderPresent(m_renderer);
         SDL_Delay(16);
     }
@@ -1103,6 +1306,9 @@ int main( int argc, char * argv[] ) {
     SDL_FreeSurface(variables_surf);
     SDL_FreeSurface(my_blocks2_surf);
     SDL_FreeSurface(my_blocks_surf);
+    SDL_FreeSurface(my_scratch_sur);
+    SDL_FreeSurface(sprite_choose_sur);
+
 
 
     SDL_DestroyTexture(code_menu_tex);
@@ -1129,6 +1335,8 @@ int main( int argc, char * argv[] ) {
     SDL_DestroyTexture(variables2_tex);
     SDL_DestroyTexture(my_blocks_tex);
     SDL_DestroyTexture(my_blocks2_tex);
+    SDL_DestroyTexture(my_scratch_tex);
+    SDL_DestroyTexture(sprite_choose_tex);
 
     TTF_CloseFont(menu_font_clicked);
     TTF_CloseFont(menu_font_normal);
