@@ -9,13 +9,8 @@
 #include "SoundMenu.h"
 
 int main( int argc, char * argv[] ) {
-<<<<<<< HEAD
-    Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO ;
-    Uint32 WND_flags = SDL_WINDOW_SHOWN ;//| SDL_WINDOW_FULLSCREEN_DESKTOP;
-=======
     Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER ;
     Uint32 WND_flags = SDL_WINDOW_SHOWN; //| SDL_WINDOW_FULLSCREEN_DESKTOP;
->>>>>>> 4fab67bb84eae756b4c6b8350251d8bc7feb7563
     SDL_Window * m_window;
     SDL_Renderer * m_renderer;
 
@@ -33,10 +28,7 @@ int main( int argc, char * argv[] ) {
     SDL_Event e;
     e.type = 0;
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 4fab67bb84eae756b4c6b8350251d8bc7feb7563
     SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     Uint32 currentTime = SDL_GetTicks();
@@ -641,40 +633,10 @@ int main( int argc, char * argv[] ) {
                 }
             }
 
-<<<<<<< HEAD
-                }
-
-                //sprite control
-
-                if (mouseIsInside(menu_block_motion[0], dragmouseX, dragmouseY)&&clicked_motion) {
-                    move_n_step(true,10,player2);
-                }
-                if (mouseIsInside(menu_block_motion[1], dragmouseX, dragmouseY)&&clicked_motion) {
-                    turn_right_n_degree(10,player2);
-                }
-                if (mouseIsInside(menu_block_motion[2], dragmouseX, dragmouseY)&&clicked_motion) {
-                    turn_right_n_degree(-10,player2);
-                }
-
-                //test look menu
-                if (mouseIsInside(menu_block_looks[0], dragmouseX, dragmouseY)&&clicked_looks) {
-                    say_s_for_n_sec(menu_block_looks[0].input1, stoi(menu_block_looks[0].input2), player2);
-                }
-                if (mouseIsInside(menu_block_looks[1], dragmouseX, dragmouseY)&&clicked_looks) {
-                    say_s(menu_block_looks[1].input1, player2);
-                }
-                if (mouseIsInside(menu_block_looks[2], dragmouseX, dragmouseY)&&clicked_looks) {
-                    think_s_for_n_sec(menu_block_looks[2].input1, stoi(menu_block_looks[0].input2), player2);
-                }
-                if (mouseIsInside(menu_block_looks[3], dragmouseX, dragmouseY)&&clicked_looks) {
-                    think_s(menu_block_looks[3].input1, player2);
-                }
-=======
             if(e.type == SDL_MOUSEMOTION and isDragging){
                 tempDraggingBlock.x = curser.x - dragOffsetX;
                 tempDraggingBlock.y = curser.y - dragOffsetY;
                 //sth the man thinks I GOT????
->>>>>>> 4fab67bb84eae756b4c6b8350251d8bc7feb7563
             }
             if(e.type == SDL_MOUSEBUTTONUP and e.button.button == SDL_BUTTON_LEFT){
                 if(isDragging){
