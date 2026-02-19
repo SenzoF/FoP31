@@ -547,7 +547,8 @@ int main( int argc, char * argv[] ) {
 
             //for checking click on different icons.
             if (e.type == SDL_MOUSEBUTTONDOWN) {
-                if (e.button.button == SDL_BUTTON_LEFT) {
+                if (e.button.button == SDL_BUTTON_LEFT)
+                {
                     if (PointInCurveyRect(&curser, &code_menu_button)) {
                         clicked_code_menu = true;
                         clicked_costumes_menu = false;
@@ -724,12 +725,6 @@ int main( int argc, char * argv[] ) {
                         clicked_sprite_name_box = false;
                         SDL_StopTextInput();
                     }
-
-
-
-
-
-
                 }
             }
 
@@ -930,7 +925,7 @@ int main( int argc, char * argv[] ) {
         for(int i=0; i<n; i++){
             SDL_SetRenderDrawColor(m_renderer, 0, 87+5*i, 87+5*i, 255);
             SDL_RenderFillRect(m_renderer, &behind_buttons[i]);
-        }
+
         SDL_SetRenderDrawColor(m_renderer, light_gray.r, light_gray.g, light_gray.b, light_gray.a);
         SDL_RenderFillRect(m_renderer, &behind_buttons[4]);
         //green flag.
