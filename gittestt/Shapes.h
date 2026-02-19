@@ -1,8 +1,9 @@
+//
+// Created by ALI on 16/02/2026.
+//
 
-
-#ifndef GITTESTT_SHAPES_H
-#define GITTESTT_SHAPES_H
-
+#ifndef FOP_PROJECT_ALI_SHAPES_H
+#define FOP_PROJECT_ALI_SHAPES_H
 
 #include "Essentials.h"
 const double shadow_factor = 0.7;
@@ -35,13 +36,15 @@ struct block1 {
     SDL_Color color;
     string input1 = "10";
     string input2=" ";
-//    SDL_Rect text_box1;
-//    SDL_Rect text_box2;
+
     bool isFocused1 = false;
     bool isFocused2 = false;
     string opCode;
     TTF_Font *font;
-
+    SDL_Rect text_box1;
+    SDL_Rect text_box2;
+    SDL_Color text_box_normalC = light_gray;
+    SDL_Color text_box_focusedC = white;
 };
 struct block2 {
     int x, y, w, h;
@@ -50,12 +53,6 @@ struct block2 {
     vector<SDL_Rect> box;
 };
 
-
-
-
-
-
-//sprites
 
 struct mainsprite {
     int x, y, w, h;
@@ -96,8 +93,6 @@ struct mainsprite {
 
 
 };
-
-
 
 
 
@@ -355,15 +350,7 @@ bool pointInPolygon(int n, const Sint16* X, const Sint16* Y, Sint16 x, Sint16 y)
 bool pointInRibbonButton(const SDL_Point* point, const RibbonButton* button){
     return pointInPolygon(6, button-> X.data(), button-> Y.data(), (Sint16 )point->x, (Sint16 )point->y);
 }
-//void aaRoundedRect(SDL_Renderer * m_renderer, int x, int y, int r, int w, int h, SDL_Color color){
-//    roundedBoxRGBA(m_renderer, x, y, x+w, x+h, r, color.r, color.g, color.b, color.a);
-//    aaQuarter_circle(m_renderer, x+r, y+r, r, color.r, color.g, color.b, color.b, 2);
-//    aaQuarter_circle(m_renderer, x+w-r-1, y+r, r, color.r, color.g, color.b, color.a, 1);
-//    aaQuarter_circle(m_renderer, x+w-r-1, y+h-r, r, color.r, color.g, color.b, color.r, 3);
-//    aaQuarter_circle(m_renderer, x+r, y+h-r, r, color.r, color.g, color.b, color.a, 4);
-//
-//
-//}
+
 
 
 
@@ -381,10 +368,9 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
     y1 = {(Sint16)(y), (Sint16)(y+(h*sqrt(3) / 6)) , (Sint16)(h+y+(h*sqrt(3) / 6)), (Sint16)(h+y)};
     filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
     aapolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
-    rect1 = {x+h/3+h/6, int(y+(h*sqrt(3) / 6))+1, h/3+1, h};
+    rect1 = {x+h/3+h/6, int(y+(h*sqrt(3) / 6))+1, h/3+2, h};
     SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
     SDL_RenderFillRect(m_renderer, &rect1);
-
     x1 = {(Sint16)(x+ h/3 + 2 * h / 3), (Sint16)(x+ h/3 + 2 * h / 3 - h/6), (Sint16)(x+ h/3 + 2 * h / 3 - h/6), (Sint16)(x+ h/3 + 2 * h / 3)};
     y1 = {(Sint16)(y), (Sint16)(y+(h*sqrt(3) / 6)) , (Sint16)(h+y+(h*sqrt(3) / 6)), (Sint16)(h+y)};
     filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
@@ -397,12 +383,21 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
     int helpX = (int)(x+h/3);
     SDL_Rect b_text_rect = {helpX, helpY, b_surf->w, b_surf->h};
 
+    string textToRender1 = block.input1;
+    if(textToRender1.empty()){
+        textToRender1 = " ";
+    }
+    string textToRender2 = block.input2;
+    if(textToRender1.empty()){
+        textToRender2 = " ";
+    }
+
     // for the first rectangle
-    SDL_Surface* text_box1_surf = TTF_RenderText_Blended(block.font, block.input1.c_str(), black);
+    SDL_Surface* text_box1_surf = TTF_RenderText_Blended(block.font, textToRender1.c_str(), black);
     SDL_Texture* text_box1_tex = SDL_CreateTextureFromSurface(m_renderer, text_box1_surf);
     SDL_Rect text_box1_rect = {helpX + b_text_rect.w +h/6, block.y + block.h /2 - text_box1_surf->h/2, text_box1_surf->w, text_box1_surf->h};
     //for the second rectangle
-    SDL_Surface* text_box2_surf = TTF_RenderText_Blended(block.font, block.input2.c_str(), black);
+    SDL_Surface* text_box2_surf = TTF_RenderText_Blended(block.font, textToRender2.c_str(), black);
     SDL_Texture* text_box2_tex = SDL_CreateTextureFromSurface(m_renderer, text_box2_surf);
     SDL_Rect text_box2_rect = {text_box1_rect.x + text_box1_rect.w +h/6, block.y + block.h /2 - text_box2_surf->h/2, text_box2_surf->w, text_box2_surf->h};
     //for the final rect.
@@ -416,10 +411,18 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
 
     SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
     SDL_RenderFillRect(m_renderer, &rect1);
-    SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
-    if(!(block.input1==" "))SDL_RenderFillRect(m_renderer, &text_box1_rect);
-    if(!(block.input2==" "))SDL_RenderFillRect(m_renderer, &text_box2_rect);
 
+    if(block.isFocused1)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+    if(!(block.input1==" "))SDL_RenderFillRect(m_renderer, &block.text_box1);
+
+    if(block.isFocused2)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+    if(!(block.input2==" "))SDL_RenderFillRect(m_renderer, &block.text_box2);
+
+    block.w = int (abs( x - (rect1.x + rect1.w) ));
+    block.text_box1 = {text_box1_rect.x, text_box1_rect.y, text_box1_rect.w + 3, text_box1_rect.h};
+    block.text_box2 = {text_box2_rect.x, text_box2_rect.y, text_box2_rect.w + 3, text_box2_rect.h};
 
 
 
@@ -428,6 +431,10 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
     if(!(block.input1==" "))SDL_RenderCopy(m_renderer, text_box1_tex, nullptr, &text_box1_rect);
 
     if(!(block.input2==" "))SDL_RenderCopy(m_renderer, text_box2_tex, nullptr, &text_box2_rect);
+
+    //setting the width here.
+
+
     SDL_FreeSurface(b_surf);
     SDL_DestroyTexture(b_tex);
     SDL_FreeSurface(text_box1_surf);
@@ -438,38 +445,112 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
 
 
 
-void drawBlock2 (SDL_Renderer *m_renderer, const block2& block){
+void drawBlock2 (SDL_Renderer *m_renderer, block1& block){
     int x = block.x, y = block.y, h = block.h, w = block.w;
     int R = block.color.r, G = block.color.g, B = block.color.b, A = block.color.a;
-    vector<Sint16> x1 = {(Sint16)(x+h/3), (Sint16)(x+h/3+h/6), (Sint16)(x+ h/3 + 2 * h / 3 - h/6), (Sint16)(x+ h/3 + 2 * h / 3)};
-    vector<Sint16> y1 = {(Sint16)(h+y), (Sint16)(h+y+(h*sqrt(3) / 6)) , (Sint16)(h+y+(h*sqrt(3) / 6)), (Sint16)(h+y)};
-    filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
-    aapolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
-    SDL_Rect rect1 = {x, y, int(w - h/(sqrt(3))), h};
+    vector<Sint16> x1 = {(Sint16)x, (Sint16)(x-h/(2 * sqrt(3))), (Sint16)x};
+    vector<Sint16> y1 = {(Sint16)y, (Sint16)(y+h/2) , (Sint16)(y+h)};
+    filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+    aapolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+    SDL_Rect rect1 = {x, y, h/3, h+1};
     SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
     SDL_RenderFillRect(m_renderer, &rect1);
-    int temp = int(h/(2 * sqrt(3)));
-    x1 = {(Sint16)x, (Sint16)(x-temp), (Sint16)x};
-    y1 = {(Sint16)y, (Sint16)(y+h/2) , (Sint16)(y+h)};
+    x1 = {(Sint16)(x+h/3), (Sint16)(x+h/3 + h/6), (Sint16)(x+h/3+h/6), (Sint16)(x+(h/3))};
+    y1 = {(Sint16)(y), (Sint16)(y+(h*sqrt(3) / 6)) , (Sint16)(h+y+(h*sqrt(3) / 6)), (Sint16)(h+y)};
+    filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
+    aapolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
+    rect1 = {x+h/3+h/6, int(y+(h*sqrt(3) / 6))+1, h/3+2, h};
+    SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
+    SDL_RenderFillRect(m_renderer, &rect1);
+    x1 = {(Sint16)(x+ h/3 + 2 * h / 3), (Sint16)(x+ h/3 + 2 * h / 3 - h/6), (Sint16)(x+ h/3 + 2 * h / 3 - h/6), (Sint16)(x+ h/3 + 2 * h / 3)};
+    y1 = {(Sint16)(y), (Sint16)(y+(h*sqrt(3) / 6)) , (Sint16)(h+y+(h*sqrt(3) / 6)), (Sint16)(h+y)};
     filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
     aapolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
 
-    double wFinal = w - h * (1 + (1 / sqrt(3)));
+    //for opCode writing on the block.
+    SDL_Surface* b_surf = TTF_RenderText_Blended(block.font, block.opCode.c_str(), black);
+    SDL_Texture* b_tex = SDL_CreateTextureFromSurface(m_renderer, b_surf);
+    int helpY = (int)(((y+(h*sqrt(3) / 6)) + (y + h))/2 - b_surf->h / 2.0);
+    int helpX = (int)(x+h/3);
+    SDL_Rect b_text_rect = {helpX, helpY, b_surf->w, b_surf->h};
 
-    x1 = {(Sint16)(x + h + wFinal), (Sint16)(x+h+wFinal+temp), (Sint16)(x + h + wFinal)};
-    y1 = {(Sint16)y, (Sint16)(y+h/2) , (Sint16)(y+h)};
+    string textToRender1 = block.input1;
+    if(textToRender1.empty()){
+        textToRender1 = " ";
+    }
+    string textToRender2 = block.input2;
+    if(textToRender1.empty()){
+        textToRender2 = " ";
+    }
 
-    filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
-    aapolygonRGBA(m_renderer, x1.data(), y1.data(), 4, R, G, B, A);
-    vector<Sint16 > x2;
-    vector<Sint16> y2;
+    // for the first rectangle
+    SDL_Surface* text_box1_surf = TTF_RenderText_Blended(block.font, textToRender1.c_str(), black);
+    SDL_Texture* text_box1_tex = SDL_CreateTextureFromSurface(m_renderer, text_box1_surf);
+    SDL_Rect text_box1_rect = {helpX + b_text_rect.w +h/6, block.y + block.h /2 - text_box1_surf->h/2, text_box1_surf->w, text_box1_surf->h};
+    //for the second rectangle
+    SDL_Surface* text_box2_surf = TTF_RenderText_Blended(block.font, textToRender2.c_str(), black);
+    SDL_Texture* text_box2_tex = SDL_CreateTextureFromSurface(m_renderer, text_box2_surf);
+    SDL_Rect text_box2_rect = {text_box1_rect.x + text_box1_rect.w +h/6, block.y + block.h /2 - text_box2_surf->h/2, text_box2_surf->w, text_box2_surf->h};
+    //for the final rect.
+    rect1 = {x + h, y, text_box2_rect.x + text_box2_rect.w - (x+h) + 2 * h/6 , h+1};
+
+    //the final polygon
+    x1 = {(Sint16)(rect1.x + rect1.w), (Sint16)(h / (2 * sqrt(3)) + rect1.x + rect1.w), (Sint16)(rect1.x + rect1.w)};
+    y1 = {(Sint16)(y), (Sint16)(y+h/2) , (Sint16)(y+h)};
+    filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+    aapolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+
+    SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
+    SDL_RenderFillRect(m_renderer, &rect1);
+
+    if(block.isFocused1)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+    if(!(block.input1==" "))SDL_RenderFillRect(m_renderer, &block.text_box1);
+
+    if(block.isFocused2)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+    if(!(block.input2==" "))SDL_RenderFillRect(m_renderer, &block.text_box2);
+
+    block.w = int (abs( x - (rect1.x + rect1.w) ));
+    block.text_box1 = {text_box1_rect.x, text_box1_rect.y, text_box1_rect.w + 3, text_box1_rect.h};
+    block.text_box2 = {text_box2_rect.x, text_box2_rect.y, text_box2_rect.w + 3, text_box2_rect.h};
+
+
+
+    SDL_RenderCopy(m_renderer, b_tex, nullptr, &b_text_rect);
+
+    if(!(block.input1==" "))SDL_RenderCopy(m_renderer, text_box1_tex, nullptr, &text_box1_rect);
+
+    if(!(block.input2==" "))SDL_RenderCopy(m_renderer, text_box2_tex, nullptr, &text_box2_rect);
+
+    //setting the width here.
+
+
+    SDL_FreeSurface(b_surf);
+    SDL_DestroyTexture(b_tex);
+    SDL_FreeSurface(text_box1_surf);
+    SDL_DestroyTexture(text_box1_tex);
+    SDL_FreeSurface(text_box2_surf);
+    SDL_DestroyTexture(text_box2_tex);
+
+    //adding polygons and rects to change it.
+    vector<Sint16> x2, y2;
     x2 = {Sint16(x), Sint16(x+h/2.0), Sint16(x+h), Sint16(x+3*h/2.0), Sint16(x + 2.0 * h)};
     y2 = {Sint16(y), Sint16(y-h/3.0), Sint16(y-h/2.0), Sint16(y-h/3.0), Sint16(y)};
     filledPolygonRGBA(m_renderer, x2.data(), y2.data(), 5, R, G, B, A);
     aapolygonRGBA(m_renderer, x2.data(), y2.data(), 5, R, G, B, A);
+    SDL_Rect final_touch = {x + h/3, y+1,  2 * h / 3, int(  h / 2 / (sqrt(3)) + 2 )};
+    SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
+    SDL_RenderFillRect(m_renderer, &final_touch);
+
+}
 
 
-
+bool pointInBlock1(const SDL_Point* point, const block1* block){
+    if(point->x >= block->x and point ->x <= (block->x + block->w) and point->y >= block->y and point ->y <= (block->y + block->h)){
+        if(!(SDL_PointInRect(point, &block->text_box1) or SDL_PointInRect(point, &block->text_box2)))return true;
+    }
+    return false;
 }
 
 
@@ -479,4 +560,4 @@ void drawBlock2 (SDL_Renderer *m_renderer, const block2& block){
 
 
 
-#endif //GITTESTT_SHAPES_H
+#endif //FOP_PROJECT_ALI_SHAPES_H
