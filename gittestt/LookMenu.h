@@ -27,11 +27,15 @@ void say_s_for_n_sec_draw(SDL_Renderer *renderer, mainsprite &player2,TTF_Font *
     // SDL_RenderFillRect(m_renderer, &sayfor);
     // SDL_RenderDrawRect(m_renderer, &sayfor);
 
-    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+
 
     filledEllipseRGBA(renderer, textX,textY+50,15,12 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX,textY+50,15,12 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX,textY+50,15,12 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX,textY+50,14,11 ,225,225,225,255);
 
 
     // stringRGBA(m_renderer, textX-20,textY+25,player2.sayfortext.c_str(),0,0,0,255);
@@ -64,11 +68,15 @@ void say_s_draw(SDL_Renderer *renderer, mainsprite &player2,TTF_Font *mainsaythi
     // SDL_RenderFillRect(m_renderer, &sayfor);
     // SDL_RenderDrawRect(m_renderer, &sayfor);
 
-    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+
 
     filledEllipseRGBA(renderer, textX,textY+50,15,12 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX,textY+50,15,12 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX,textY+50,15,12 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX,textY+50,14,11 ,225,225,225,255);
 
 
     // stringRGBA(m_renderer, textX-20,textY+25,player2.sayfortext.c_str(),0,0,0,255);
@@ -102,17 +110,21 @@ void think_s_for_n_sec_draw(SDL_Renderer *renderer, mainsprite &player2,TTF_Font
     // SDL_RenderFillRect(m_renderer, &sayfor);
     // SDL_RenderDrawRect(m_renderer, &sayfor);
 
-    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+
 
     filledEllipseRGBA(renderer, textX+10,textY+50,5,5 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX+10,textY+50,5,5 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX+10,textY+50,5,5 ,100,100,100,255);
 
     filledEllipseRGBA(renderer, textX,textY+55,3,3 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX,textY+55,3,3 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX,textY+55,3,3 ,100,100,100,255);
 
     filledEllipseRGBA(renderer, textX-8,textY+60,2,2 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX-8,textY+60,2,2 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX-8,textY+60,2,2 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX+10,textY+50,4,4 ,225,225,225,255);
 
 
     // stringRGBA(m_renderer, textX-20,textY+25,player2.sayfortext.c_str(),0,0,0,255);
@@ -145,17 +157,21 @@ void think_s_draw(SDL_Renderer *renderer, mainsprite &player2,TTF_Font *mainsayt
     // SDL_RenderFillRect(m_renderer, &sayfor);
     // SDL_RenderDrawRect(m_renderer, &sayfor);
 
-    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+
 
     filledEllipseRGBA(renderer, textX+10,textY+50,5,5 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX+10,textY+50,5,5 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX+10,textY+50,5,5 ,100,100,100,255);
 
     filledEllipseRGBA(renderer, textX,textY+55,3,3 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX,textY+55,3,3 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX,textY+55,3,3 ,100,100,100,255);
 
     filledEllipseRGBA(renderer, textX-8,textY+60,2,2 ,225,225,225,255);
-    aaellipseRGBA(renderer, textX-8,textY+60,2,2 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX-8,textY+60,2,2 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX+10,textY+30,40,20 ,225,225,225,255);
+    aaellipseRGBA(renderer, textX+10,textY+30,40,20 ,100,100,100,255);
+
+    filledEllipseRGBA(renderer, textX+10,textY+50,4,4 ,225,225,225,255);
 
 
     // stringRGBA(m_renderer, textX-20,textY+25,player2.sayfortext.c_str(),0,0,0,255);

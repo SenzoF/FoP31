@@ -1,6 +1,4 @@
-//
-// Created by USER on 2/17/2026.
-//
+
 
 #ifndef GITTESTT_TEXTURES_H
 #define GITTESTT_TEXTURES_H
@@ -54,6 +52,7 @@ SDL_Color deep_orange = {255, 128, 0, 255};
 SDL_Color dark_deep_orange = {204, 102, 0, 255};
 SDL_Color pink = {255, 0, 127, 255};
 SDL_Color dark_pink = {204, 102, 102, 255};
+SDL_Color light_gray = {200, 200, 200, 255};
 
 SDL_Texture* loadtexture(const string &path, SDL_Renderer *renderer) {
     SDL_Surface* surface = IMG_Load(path.c_str());

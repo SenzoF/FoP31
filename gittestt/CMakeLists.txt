@@ -4,13 +4,15 @@ project(gittestt)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(gittestt main.cpp
+
         Essentials.h
         Textures.h
         Shapes.h
         DragFunc.h
         Motion.h
         LookMenu.h
-        SoundMenu.h)
+        SoundMenu.h
+        blockArrangement.h)
 
 
 target_link_libraries(${PROJECT_NAME} -lconio)
