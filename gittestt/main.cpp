@@ -7,6 +7,7 @@
 #include "Motion.h"
 #include "LookMenu.h"
 #include "SoundMenu.h"
+#include "Control.h"
 
 int main( int argc, char * argv[] ) {
     Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER |SDL_INIT_AUDIO;
@@ -127,6 +128,33 @@ int main( int argc, char * argv[] ) {
     my_blocks.vertices();
     RibbonButton my_blocks2 = {(code_menu_button.w-20)/2, int((initial_y + 8  * dButton) * enl) ,int(r*co * enl)};
     my_blocks2.vertices();
+    //add extension
+    RibbonButton add_extension = {(code_menu_button.w-20)/2, int((initial_y + 11  * dButton) * enl) , int(r*enl)};
+    add_extension.vertices();
+    RibbonButton add_extension2 = {(code_menu_button.w-20)/2, int((initial_y + 11  * dButton) * enl) ,int(r*co * enl)};
+    add_extension2.vertices();
+    //add pen button
+    RibbonButton pen_ext = {(code_menu_button.w-20)/2, int((initial_y + 9  * dButton) * enl) , int(r*enl)};
+    pen_ext.vertices();
+    RibbonButton pen_ext2 = {(code_menu_button.w-20)/2, int((initial_y + 9  * dButton) * enl) ,int(r*co * enl)};
+    pen_ext2.vertices();
+
+    //add pen
+
+
+
+    //under customs buttons
+    int r2 = int(1.4 * r);
+    //upload image
+    RibbonButton upload_image = {(code_menu_button.w-20)/2 + 3, int((initial_y + 8  * dButton) * enl) , int(r2*enl)};
+    upload_image.vertices();
+
+    //select button
+    RibbonButton select_button = {(code_menu_button.w-20)/2 + 3, int((initial_y + 8  * dButton)) , int(r2)};
+    select_button.vertices();
+
+
+
 
 
 
@@ -232,11 +260,40 @@ int main( int argc, char * argv[] ) {
     SDL_Surface* my_blocks2_surf = TTF_RenderText_Blended(under_code_font2, "My blocks", gray);
     SDL_Texture* my_blocks2_tex = SDL_CreateTextureFromSurface(m_renderer, my_blocks2_surf);
     SDL_Rect my_blocks2_text_rect = {my_blocks2.x-my_blocks2_surf->w/2, my_blocks2.y-my_blocks2_surf->h/2, my_blocks2_surf->w, my_blocks2_surf->h};
+    //add extension
+    SDL_Surface* add_extension_surf = TTF_RenderText_Blended(under_code_font, "Add Ext", black);
+    SDL_Texture* add_extension_tex = SDL_CreateTextureFromSurface(m_renderer, add_extension_surf);
+    SDL_Rect add_extension_rect = {add_extension.x-add_extension_surf->w/2, add_extension.y-add_extension_surf->h/2, add_extension_surf->w, add_extension_surf->h};
+    //clicked
+    SDL_Surface* add_extension2_surf = TTF_RenderText_Blended(under_code_font2, "Add Ext", gray);
+    SDL_Texture* add_extension2_tex = SDL_CreateTextureFromSurface(m_renderer, add_extension2_surf);
+    SDL_Rect add_extension2_rect = {add_extension2.x-add_extension2_surf->w/2, add_extension2.y-add_extension2_surf->h/2, add_extension2_surf->w, add_extension2_surf->h};
+    //pen
+    SDL_Surface* pen_code_surf = TTF_RenderText_Blended(under_code_font2, "Pen", gray);
+    SDL_Texture* pen_code_tex = SDL_CreateTextureFromSurface(m_renderer, pen_code_surf);
+    SDL_Rect pen_code_rect = {pen_ext.x-pen_code_surf->w/2, pen_ext.y-pen_code_surf->h/2, pen_code_surf->w, pen_code_surf->h};
+
+
+
+
+
+
+
+
 
     //saving ribbon and the rest
     SDL_Surface* my_scratch_sur = TTF_RenderText_Blended(saving_ribbon, "Hexacratch", light_blue);
     SDL_Texture* my_scratch_tex = SDL_CreateTextureFromSurface(m_renderer, my_scratch_sur);
     SDL_Rect my_scratch_rect = {25, 10, my_scratch_sur->w, my_scratch_sur->h};
+
+
+
+    //------------------------------------------
+    //for customs
+    SDL_Surface* upload_image_sur = TTF_RenderText_Blended(under_code_font, "Upload Image", gray);
+    SDL_Texture* upload_image_tex = SDL_CreateTextureFromSurface(m_renderer, upload_image_sur);
+    SDL_Rect upload_image_rect = {upload_image.x-upload_image_sur->w/2, upload_image.y-upload_image_sur->h/2, upload_image_sur->w, upload_image_sur->h};
+
 
 
 
@@ -289,6 +346,8 @@ int main( int argc, char * argv[] ) {
     for(int i=0; i<n; i++){
         under_sprite[i] = {sprite_property[0].x + i, sprite_property[0].y + sprite_property[0].h + i, DM.w - under_sprite[i].x - 2 * i, DM.w - under_sprite[i].y - 2 * i};
     }
+
+
 
 //    cout << sprite_property[n-1].x << endl << sprite_property[n-1].y << endl << sprite_property[n-1].w << endl << sprite_property[n-1].h << endl << DM.w;
 
@@ -420,6 +479,22 @@ int main( int argc, char * argv[] ) {
     menu_block_events[7].opCode = "broadcast & wait"; menu_block_events[7].input1 = "msg1"; menu_block_events[7].input2 = " ";
 
     //control blocks
+    menu_block_control[0].y = code_menu_button.y + code_menu_button.h + 30;
+    arrange(dist2, menu_block_control);
+    for(auto &i:menu_block_control){
+        i.h = blockH;
+        i.x = blocks_scrolling_menu[0].x + 16;
+        i.color = deep_orange;
+        i.font = code_block;
+        i.opCode = "wait";
+        i.final_indicator = 0;
+    }
+    menu_block_control[0].opCode = "wait"; menu_block_control[0].input1 = "1"; menu_block_control[0].input2 = " ";
+
+
+
+
+
 
 
 
@@ -516,13 +591,21 @@ int main( int argc, char * argv[] ) {
     bool clicked_motion=true, clicked_looks=false, clicked_sound=false, clicked_events=false, clicked_control=false, clicked_sensing=false, clicked_operators=false, clicked_variables=false, clicked_my_blocks = false;
     int activeBlockIndex = -1, activeBoxSide = 0;
     bool clicked_sprite_name_box = false;
-
+    bool clicked_sprite = false;
     //flag clicking
     bool clicked_flag = false, clicked_redCircle = false;
+    //customs menu bool
+    bool clicked_upload = false;
+    SDL_Rect ext_selection = {blocks_scrolling_menu[0].x, blocks_scrolling_menu[0].y, DM.w-blocks_scrolling_menu[0].x, DM.h-blocks_scrolling_menu[0].y};
+    SDL_Rect ext_add = {ext_selection.x + ext_selection.w/4,ext_selection.y + ext_selection.h/4, ext_selection.w/2, ext_selection.h/2};
+    bool moft = false, moft2 = false;
+
     //--------------------------------------------------------------------------------
     //the main loop
     //--------------------------------------------------------------------------------
     while(Running){
+
+        sort(program.begin(), program.end(), program_comp);
 
         for (int i=0; i<program.size(); i++)
         {
@@ -536,6 +619,77 @@ int main( int argc, char * argv[] ) {
                 //following condition for text.
             else if (e.type == SDL_KEYDOWN) {
                 if (e.key.keysym.sym == SDLK_ESCAPE)Running = false;
+
+                //================
+                //for space event
+                if(e.key.keysym.sym == SDLK_SPACE){
+                    if(program[0].opCode == "when key pressed" and program[0].input1 == "space"){
+                        for (auto &b: program) {
+                            if (b.opCode == "turn right")turn_right_n_degree(stoi(b.input1), player2);
+                            else if (b.opCode == "turn left")turn_left_n_degree(stoi(b.input1), player2);
+                            else if (b.opCode == "move")move_n_step(player2.angle, stoi(b.input1), player2);
+                            else if (b.opCode == "go to")go_to_pos(b.input1, player2, curser);
+                            else if (b.opCode == "go to:")go_to_cor(stoi(b.input1), stoi(b.input2), player2);
+                            else if (b.opCode == "point in direction")point_in_direction(stoi(b.input1), player2);
+                            else if (b.opCode == "point towards")point_towards(b.input1, curser, player2);
+                            else if (b.opCode == "change x by")change_x_by(stoi(b.input1), player2);
+                            else if (b.opCode == "set x to")set_x_to(stoi(b.input1), player2);
+                            else if (b.opCode == "change y by")change_y_by(stoi(b.input1), player2);
+                            else if (b.opCode == "set y to")set_y_to(stoi(b.input1), player2);
+                            else if (b.opCode == "if on edge bounce")if_on_edge_bounce(player2);
+                            else if(b.opCode == "say") {say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+//                    else if(b.opCode == "say timed"){say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+
+
+
+
+
+
+
+                        }
+                    }
+                }
+                if(e.key.keysym.sym == SDLK_RETURN){
+                    if (program[0].opCode == "when key pressed" and program[0].input1 == "enter") {
+                        for (auto &b: program) {
+                            if (b.opCode == "turn right")turn_right_n_degree(stoi(b.input1), player2);
+                            else if (b.opCode == "turn left")turn_left_n_degree(stoi(b.input1), player2);
+                            else if (b.opCode == "move")move_n_step(player2.angle, stoi(b.input1), player2);
+                            else if (b.opCode == "go to")go_to_pos(b.input1, player2, curser);
+                            else if (b.opCode == "go to:")go_to_cor(stoi(b.input1), stoi(b.input2), player2);
+                            else if (b.opCode == "point in direction")point_in_direction(stoi(b.input1), player2);
+                            else if (b.opCode == "point towards")point_towards(b.input1, curser, player2);
+                            else if (b.opCode == "change x by")change_x_by(stoi(b.input1), player2);
+                            else if (b.opCode == "set x to")set_x_to(stoi(b.input1), player2);
+                            else if (b.opCode == "change y by")change_y_by(stoi(b.input1), player2);
+                            else if (b.opCode == "set y to")set_y_to(stoi(b.input1), player2);
+                            else if (b.opCode == "if on edge bounce")if_on_edge_bounce(player2);
+                            else if (b.opCode == "say") {say_s(b.input1, player2);say_s_draw(m_renderer, player2, code_block);}
+//                    else if(b.opCode == "say timed"){say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+
+
+
+
+
+
+
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             }
 
@@ -563,32 +717,39 @@ int main( int argc, char * argv[] ) {
                     }
 
                     if (pointInRibbonButton(&curser, &motion)) {
-                        clicked_motion = true, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
+                        moft = false, clicked_motion = true, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &looks)) {
-                        clicked_motion = false, clicked_looks = true, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
+                        moft = false, clicked_motion = false, clicked_looks = true, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &sound)) {
-                        clicked_motion = false, clicked_looks = false, clicked_sound = true, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
+                        moft = false, clicked_motion = false, clicked_looks = false, clicked_sound = true, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &events)) {
-                        clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = true, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
+                        moft = false, clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = true, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &control)) {
-                        clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = true, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
+                        moft = false, clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = true, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &sensing)) {
-                        clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = true, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
+                        moft = false, clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = true, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &operators)) {
-                        clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = true, clicked_variables = false, clicked_my_blocks = false;
+                        moft = false, clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = true, clicked_variables = false, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &variables)) {
-                        clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = true, clicked_my_blocks = false;
+                        moft = false, clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = true, clicked_my_blocks = false;
                     }
                     if (pointInRibbonButton(&curser, &my_blocks)) {
-                        clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = true;
+                        moft = false, clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = true;
                     }
+                    if (pointInRibbonButton(&curser, &add_extension)) {
+                        moft = true, clicked_motion = false, clicked_looks = false, clicked_sound = false, clicked_events = false, clicked_control = false, clicked_sensing = false, clicked_operators = false, clicked_variables = false, clicked_my_blocks = false;
+                    }
+                    if (pointInRibbonButton(&curser, &upload_image)) {
+                        clicked_upload = !clicked_upload;
+                    }
+
 
                     dragmouseX = e.button.x;
                     dragmouseY = e.button.y;
@@ -690,11 +851,33 @@ int main( int argc, char * argv[] ) {
                         menu_block_events[j].isFocused2 = (activeBlockIndex == j and activeBoxSide == 2);
                     }
                     // ----------------------------------------------------------------------------
+                    //for events boxes
+                    // ----------------------------------------------------------------------------
+                    if(clicked_control){
+                        for(int i=0; i<menu_block_control.size(); i++){
+                            auto &b = menu_block_control[i];
+                            if(SDL_PointInRect(&curser, &b.text_box1)){
+                                activeBlockIndex = i; activeBoxSide = 1; clickedAnything = true;
+                            }
+                            if(SDL_PointInRect(&curser, &b.text_box2)){
+                                activeBlockIndex = i; activeBoxSide = 2; clickedAnything = true;
+                            }
+                        }
+                    }
+                    if(!clickedAnything){
+                        activeBlockIndex = -1; activeBoxSide = 0;
+                    }
+                    for(int j=0; j<menu_block_events.size(); j++){
+                        menu_block_events[j].isFocused1 = (activeBlockIndex == j and activeBoxSide == 1);
+                        menu_block_events[j].isFocused2 = (activeBlockIndex == j and activeBoxSide == 2);
+                    }
+                    // ----------------------------------------------------------------------------
                     vector<block1> *activeMenu = nullptr;
                     if(clicked_motion) activeMenu = &menu_block_motion;
                     else if(clicked_looks) activeMenu = &menu_block_looks;
                     else if(clicked_sound) activeMenu = &menu_block_sound;
                     else if(clicked_events) activeMenu = &menu_block_events;
+                    else if(clicked_control) activeMenu = &menu_block_control;
                     if(activeMenu){
                         for(auto& b : *activeMenu){
                             if(pointInBlock1(&curser, &b)){
@@ -712,6 +895,39 @@ int main( int argc, char * argv[] ) {
                     if(PointInCircle(&curser, &terminate_circle)){
                         clicked_redCircle = !clicked_redCircle;
                     }
+
+                    //=========================================
+                    //for sprite clicking event
+                    SDL_Rect sprite_click_checker = {player2.x, player2.y, player2.w, player2.h};
+                    clicked_sprite = SDL_PointInRect(&curser, &sprite_click_checker);
+                    if(clicked_sprite){
+                        for (auto &b: program) {
+                            if (b.opCode == "turn right")turn_right_n_degree(stoi(b.input1), player2);
+                            else if (b.opCode == "turn left")turn_left_n_degree(stoi(b.input1), player2);
+                            else if (b.opCode == "move")move_n_step(player2.angle, stoi(b.input1), player2);
+                            else if (b.opCode == "go to")go_to_pos(b.input1, player2, curser);
+                            else if (b.opCode == "go to:")go_to_cor(stoi(b.input1), stoi(b.input2), player2);
+                            else if (b.opCode == "point in direction")point_in_direction(stoi(b.input1), player2);
+                            else if (b.opCode == "point towards")point_towards(b.input1, curser, player2);
+                            else if (b.opCode == "change x by")change_x_by(stoi(b.input1), player2);
+                            else if (b.opCode == "set x to")set_x_to(stoi(b.input1), player2);
+                            else if (b.opCode == "change y by")change_y_by(stoi(b.input1), player2);
+                            else if (b.opCode == "set y to")set_y_to(stoi(b.input1), player2);
+                            else if (b.opCode == "if on edge bounce")if_on_edge_bounce(player2);
+                            else if(b.opCode == "say") {say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+//                    else if(b.opCode == "say timed"){say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+
+
+                        }
+                        clicked_sprite = false;
+                    }
+
+                    if(moft and SDL_PointInRect(&curser, &ext_add)){
+                        moft2 = true;
+                    }
+
+
+
 
 
                 }
@@ -848,7 +1064,28 @@ int main( int argc, char * argv[] ) {
                 }
             }
             // ----------------------------------------------------------------------------
-
+            //for control boxes
+            // ----------------------------------------------------------------------------
+            if(clicked_control){
+                if (activeBlockIndex != -1) {
+                    auto &currentBlock = menu_block_control[activeBlockIndex];
+                    string *target = (activeBoxSide == 1) ? &currentBlock.input1 :
+                                     (activeBoxSide == 2) ? &currentBlock.input2 : nullptr;
+                    if (target) {
+                        if (e.type == SDL_TEXTINPUT) {
+                            *target += e.text.text;
+                        } else if (e.type == SDL_KEYDOWN) {
+                            if (e.key.keysym.sym == SDLK_BACKSPACE and !target->empty()) {
+                                target->pop_back();
+                            }
+                            if (e.key.keysym.sym == SDLK_RETURN) {
+                                activeBlockIndex = -1;
+                            }
+                        }
+                    }
+                }
+            }
+            // ----------------------------------------------------------------------------
 
             if (e.type == SDL_MOUSEBUTTONUP)
             {
@@ -1021,8 +1258,8 @@ int main( int argc, char * argv[] ) {
             SDL_SetRenderDrawColor(m_renderer, light_gray.r, light_gray.g, light_gray.b, light_gray.a);
             SDL_RenderFillRect(m_renderer, &behind_buttons[4]);
             //green flag.
-            if(clicked_flag) SDL_SetRenderDrawColor(m_renderer, deep_orange.r, deep_orange.g, deep_orange.b, deep_orange.a);
-            else SDL_SetRenderDrawColor(m_renderer, dark_green.r, dark_green.g, dark_green.b, dark_green.a);
+//            if(clicked_flag) SDL_SetRenderDrawColor(m_renderer, deep_orange.r, deep_orange.g, deep_orange.b, deep_orange.a);
+            SDL_SetRenderDrawColor(m_renderer, dark_green.r, dark_green.g, dark_green.b, dark_green.a);
             SDL_RenderFillRect(m_renderer, &execution_rect1); SDL_RenderFillRect(m_renderer, &execution_rect2);
             //red stop circle
             if(clicked_redCircle){
@@ -1262,6 +1499,14 @@ int main( int argc, char * argv[] ) {
             else if(pointInRibbonButton(&curser, &my_blocks)){
                 ribbonButtonPolygon(m_renderer, my_blocks.X, my_blocks.Y, dark_pink.r, dark_pink.g, dark_pink.b, dark_pink.a);
             }
+
+            if(!pointInRibbonButton(&curser, &add_extension)){
+                ribbonButtonPolygon(m_renderer, add_extension.X, add_extension.Y, white.r, white.g, white.b, white.a);
+            }
+            else if(pointInRibbonButton(&curser, &add_extension)){
+                ribbonButtonPolygon(m_renderer, add_extension.X, add_extension.Y, light_gray.r, light_gray.g, light_gray.b, light_gray.a);
+            }
+
             SDL_RenderCopy(m_renderer, motion_tex, nullptr, &motion_text_rect);
             SDL_RenderCopy(m_renderer, looks_tex, nullptr, &looks_text_rect);
             SDL_RenderCopy(m_renderer, sound_tex, nullptr, &sound_text_rect);
@@ -1271,6 +1516,7 @@ int main( int argc, char * argv[] ) {
             SDL_RenderCopy(m_renderer, operators_tex, nullptr, &operators_text_rect);
             SDL_RenderCopy(m_renderer, variables_tex, nullptr, &variables_text_rect);
             SDL_RenderCopy(m_renderer, my_blocks_tex, nullptr, &my_blocks_text_rect);
+            SDL_RenderCopy(m_renderer, add_extension_tex, nullptr, &add_extension_rect);
 
             if(clicked_motion){
                 ribbonButtonPolygon(m_renderer, motion2.X, motion2.Y, blue.r, blue.g, blue.b, blue.a);
@@ -1317,6 +1563,11 @@ int main( int argc, char * argv[] ) {
             else if(clicked_control){
                 ribbonButtonPolygon(m_renderer, control2.X, control2.Y, orange.r, orange.g, orange.b, orange.a);
                 SDL_RenderCopy(m_renderer, control2_tex, nullptr, &control2_text_rect);
+
+                for(auto &i:menu_block_control){
+                    drawBlock1(m_renderer, i);
+                }
+
             }
 
             else if(clicked_sensing){
@@ -1338,6 +1589,7 @@ int main( int argc, char * argv[] ) {
 
 
 
+
             //drawing looks blocks
             for(auto &b:program){
                 if(b.final_indicator == 0)drawBlock1(m_renderer, b);
@@ -1353,6 +1605,33 @@ int main( int argc, char * argv[] ) {
         else if(clicked_costumes_menu){
             curvey_rect_3D(m_renderer, costumes_menu_button2.x, costumes_menu_button2.y, costumes_menu_button2.w, costumes_menu_button2.h, costumes_menu_button2.r, cyan.r, cyan.g, cyan.b, cyan.a);
             SDL_RenderCopy(m_renderer, costumes_menu_tex2, nullptr, &costumes_menu_text_rect2);
+
+
+
+
+
+            for(int i=0; i<n; i++){
+                SDL_SetRenderDrawColor(m_renderer, 100+5*i, 100, 100+5*i, 255);
+                SDL_RenderFillRect(m_renderer, &left_ribbon[i]);
+                SDL_RenderFillRect(m_renderer, &blocking_system[i]);
+
+
+            }
+            SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+            SDL_RenderFillRect(m_renderer, &left_ribbon[n-1]);
+            SDL_RenderFillRect(m_renderer, &blocking_system[n-1]);
+
+
+
+
+            if(clicked_upload)ribbonButtonPolygon(m_renderer, upload_image.X, upload_image.Y, pink.r, pink.g, pink.b, pink.a);
+            else ribbonButtonPolygon(m_renderer, upload_image.X, upload_image.Y, purple.r, purple.g, purple.b, purple.a);
+
+            SDL_RenderCopy(m_renderer, upload_image_tex, nullptr, &upload_image_rect);
+
+
+
+
         }
             //sounds menu
         else if(clicked_sounds_menu){
@@ -1413,10 +1692,10 @@ int main( int argc, char * argv[] ) {
 
         //sound menu function
 
-        sort(program.begin(), program.end(), program_comp);
         //running the program
         if(clicked_flag){
-
+            SDL_SetRenderDrawColor(m_renderer, deep_orange.r, deep_orange.g, deep_orange.b, deep_orange.a);
+            SDL_RenderFillRect(m_renderer, &execution_rect1); SDL_RenderFillRect(m_renderer, &execution_rect2);
             if(program[0].opCode == "when flag clicked"){
                 for (auto &b: program) {
                     if (b.opCode == "turn right")turn_right_n_degree(stoi(b.input1), player2);
@@ -1451,6 +1730,7 @@ int main( int argc, char * argv[] ) {
                     else if(b.opCode == "stop all sounds") {stopAllSound();}
                     else if(b.opCode == "change volume by") {change_volume_by(stoi(b.input1));}
                     else if(b.opCode == "set volume to") {set_volume(stoi(b.input1));}
+
 
 
 
@@ -1515,6 +1795,19 @@ int main( int argc, char * argv[] ) {
 
 
 
+        if(moft&&clicked_code_menu){
+            ribbonButtonPolygon(m_renderer, add_extension2.X, add_extension2.Y, white.r, white.g, white.b, white.a);
+            SDL_RenderCopy(m_renderer, add_extension2_tex, nullptr, &add_extension2_rect);
+            //putting rect in page.
+            SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 100);
+            SDL_RenderFillRect(m_renderer, &ext_selection);
+            SDL_SetRenderDrawColor(m_renderer, 0, 255, 0, 255);
+            SDL_RenderFillRect(m_renderer, &ext_add);
+
+
+
+
+        }
 
 
 
@@ -1552,6 +1845,7 @@ int main( int argc, char * argv[] ) {
     SDL_FreeSurface(my_blocks2_surf);
     SDL_FreeSurface(my_blocks_surf);
     SDL_FreeSurface(my_scratch_sur);
+    SDL_FreeSurface(upload_image_sur);
 
 
 
@@ -1580,6 +1874,7 @@ int main( int argc, char * argv[] ) {
     SDL_DestroyTexture(my_blocks_tex);
     SDL_DestroyTexture(my_blocks2_tex);
     SDL_DestroyTexture(my_scratch_tex);
+    SDL_DestroyTexture(upload_image_tex);
 
     TTF_CloseFont(menu_font_clicked);
     TTF_CloseFont(menu_font_normal);
