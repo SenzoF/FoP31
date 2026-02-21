@@ -100,6 +100,12 @@ void glide_to_which(int seconds, string &which, SDL_Point &curser, mainsprite &s
             SDL_Delay(10);
         }
 
+void turn_right_n_degree(double n,mainsprite &sprite) {
+    SDL_Rect where_boundry = {1025, 128, 895, 532};
+    SDL_Point point = {sprite.x , sprite.y};
+    if(SDL_PointInRect(&point, &where_boundry)){
+        double angle = n;
+        sprite.angle += angle;
     }
     else if(which == "mouse pointer"){
         int targetX = curser.x;
@@ -150,6 +156,15 @@ void glide_to_xy(int seconds, int x , int y , mainsprite &sprite){
     sprite.x = targetX;
     sprite.y = targetY;
 
+void go_to_cor(int x, int y, mainsprite &sprite){
+    x+=1450;
+    y+=350;
+    SDL_Rect where_to = {1025, 128, 895, 532};
+    SDL_Point point = {x, y};
+    if(SDL_PointInRect(&point, &where_to)){
+        sprite.x = x;
+        sprite.y = y;
+    }
 }
 
 void point_in_direction(int angle, mainsprite &sprite){
@@ -176,6 +191,7 @@ void change_x_by(int x, mainsprite &sprite){
 
 }
 void set_x_to(int X, mainsprite &sprite){
+    X+=1450;
     SDL_Rect where_boundry = {1025, 128, 895, 532};
     if(X >= where_boundry.x and X <= where_boundry.x + where_boundry.w){
         sprite.x = X;
@@ -189,12 +205,22 @@ void change_y_by(int y, mainsprite &sprite){
     }
 }
 void set_y_to(int Y, mainsprite &sprite){
+    Y += 350;
     SDL_Rect where_boundry = {1025, 128, 895, 532};
     if(Y >= where_boundry.y and Y <= where_boundry.y + where_boundry.h){
         sprite.y = Y;
     }
 }
+//void if_on_edge_bounce(mainsprite &sprite){
+//    if(sprite.x >= 1900 or sprite.x <= 1050 or sprite.y <= 140 or sprite.y >= 600){
+//        sprite.flip = SDL_FLIP_HORIZONTAL;
+////        sprite.flip = SDL_FLIP_VERTICAL;
+//        sprite.angle += 180;
+//    }
+////    sprite.flip = SDL_FLIP_NONE;
+//}
 
+//soroush's code for edge bounce.it does not work.
 void if_on_edge_bounce(mainsprite &sprite)
 {
     SDL_Rect where_boundry = {1025, 128, 895, 532};

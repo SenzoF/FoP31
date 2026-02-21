@@ -47,7 +47,8 @@ void say_s_for_n_sec_draw(SDL_Renderer *renderer, mainsprite &player2,TTF_Font *
 
     SDL_RenderCopy(renderer, saytex1, nullptr, &sayrect1);
 
-
+    SDL_FreeSurface(saysurf1);
+    SDL_DestroyTexture(saytex1);
 }
 
 void say_s(string s, mainsprite &sprite) {
