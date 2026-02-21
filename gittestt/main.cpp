@@ -9,7 +9,7 @@
 #include "SoundMenu.h"
 
 int main( int argc, char * argv[] ) {
-    Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER ;
+    Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER |SDL_INIT_AUDIO;
     Uint32 WND_flags = SDL_WINDOW_SHOWN; //| SDL_WINDOW_FULLSCREEN_DESKTOP;
     SDL_Window * m_window;
     SDL_Renderer * m_renderer;
@@ -27,6 +27,8 @@ int main( int argc, char * argv[] ) {
     int H = DM.h;
     SDL_Event e;
     e.type = 0;
+
+    srand(time(nullptr));
 
 
     SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -337,7 +339,7 @@ int main( int argc, char * argv[] ) {
     menu_block_motion[0].opCode = "move"; menu_block_motion[0].input1 = "10"; menu_block_motion[0].input2 = " ";
     menu_block_motion[1].opCode = "turn right"; menu_block_motion[1].input1 = "15"; menu_block_motion[1].input2 = " ";
     menu_block_motion[2].opCode = "turn left"; menu_block_motion[2].input1 = "15"; menu_block_motion[2].input2 = " ";
-    menu_block_motion[3].opCode = "go to"; menu_block_motion[3].input1 = "random pos"; menu_block_motion[3].input2 = " ";
+    menu_block_motion[3].opCode = "go to"; menu_block_motion[3].input1 = "random position"; menu_block_motion[3].input2 = " ";
     menu_block_motion[4].opCode = "go to:"; menu_block_motion[4].input1 = "0"; menu_block_motion[4].input2 = "0";
     menu_block_motion[5].opCode = "glide"; menu_block_motion[5].input1 = "0"; menu_block_motion[5].input2 = "random pos";
 //    menu_block_motion[6].opCode = "glide:"; menu_block_motion[6].input1 = "0"; menu_block_motion[6].input2 = "0";
@@ -362,7 +364,7 @@ int main( int argc, char * argv[] ) {
     }
     menu_block_looks[0].opCode = "say timed"; menu_block_looks[0].input1 = "Hello!"; menu_block_looks[0].input2 = "2";
     menu_block_looks[1].opCode = "say"; menu_block_looks[1].input1 = "Hello!"; menu_block_looks[1].input2 = " ";
-    menu_block_looks[2].opCode = "think"; menu_block_looks[2].input1 = "hmm..."; menu_block_looks[2].input2 = "2";
+    menu_block_looks[2].opCode = "think timed"; menu_block_looks[2].input1 = "hmm..."; menu_block_looks[2].input2 = "2";
     menu_block_looks[3].opCode = "think"; menu_block_looks[3].input1 = "hmm..."; menu_block_looks[3].input2 = " ";
     menu_block_looks[4].opCode = "switch custom to"; menu_block_looks[4].input1 = "cs1"; menu_block_looks[4].input2 = " ";
     menu_block_looks[5].opCode = "next costume"; menu_block_looks[5].input1 = " "; menu_block_looks[5].input2 = " ";
@@ -497,6 +499,9 @@ int main( int argc, char * argv[] ) {
     player2.setcenter();
 
     //this is where the real stuff is happening.
+
+    //showing bool
+    bool isshow=true;
     //dragging variables
     //------------------------------------------
     block1 tempDraggingBlock;
@@ -845,6 +850,139 @@ int main( int argc, char * argv[] ) {
             // ----------------------------------------------------------------------------
 
 
+            if (e.type == SDL_MOUSEBUTTONUP)
+            {
+                if (clicked_motion&&(curser.x<blocking_system[0].x))
+                {
+                    if (pointInBlock1(&curser , &menu_block_motion[0])) {
+                        move_n_step(player2.angle,stoi(menu_block_motion[0].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[1])) {
+                        turn_right_n_degree(stoi(menu_block_motion[1].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[2])) {
+                        turn_left_n_degree(stoi(menu_block_motion[2].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[3])) {
+                        go_to_pos(menu_block_motion[3].input1,player2,curser);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[4])) {
+                        go_to_cor(stoi(menu_block_motion[4].input1),stoi(menu_block_motion[4].input2),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[5])) {
+                        glide_to_which(stoi(menu_block_motion[5].input1),menu_block_motion[5].input2,curser,player2,currentTime);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[6])) {
+                        glide_to_xy(stoi(menu_block_motion[6].input1),stoi(menu_block_motion[6].input2),stoi(menu_block_motion[6].input2),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[7])) {
+                        point_in_direction(stoi(menu_block_motion[7].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[8])) {
+                        point_towards(menu_block_motion[8].input1,curser,player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[9])) {
+                        change_x_by(stoi(menu_block_motion[9].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[10])) {
+                        set_x_to(stoi(menu_block_motion[10].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[11])) {
+                        change_y_by(stoi(menu_block_motion[11].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[12])) {
+                        set_y_to(stoi(menu_block_motion[12].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[13])) {
+                        if_on_edge_bounce(player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_motion[14])) {
+                        set_rotation_style(player2);
+                    }
+                }
+                if (clicked_looks&&(curser.x<blocking_system[0].x))
+                {
+                    if (pointInBlock1(&curser , &menu_block_looks[0])) {
+                        say_s_for_n_sec(menu_block_looks[0].input1,stoi(menu_block_looks[0].input2),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[1])) {
+                        say_s(menu_block_looks[1].input1,player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[2])) {
+                        think_s_for_n_sec(menu_block_looks[2].input1,stoi(menu_block_looks[2].input2),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[3])) {
+                        think_s(menu_block_looks[3].input1,player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[4])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[5])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[6])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[7])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[8])) {
+                        change_size_by(stoi(menu_block_looks[8].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[9])) {
+                        set_size_to(stoi(menu_block_looks[9].input1),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[10])) {
+                        change_color_by(stoi(menu_block_looks[10].input2),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[11])) {
+                        set_color_effect_to(stoi(menu_block_looks[11].input2),player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[12])) {
+                        clear_graphics(player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[13])) {
+                        show(player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[14])) {
+                        hide(player2);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[15])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_looks[16])) {
+
+                    }
+
+                }
+                if (clicked_sound&&(curser.x<blocking_system[0].x))
+                {
+                    if (pointInBlock1(&curser , &menu_block_sound[0])) {
+                        playsound_until(MeowSound1);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_sound[1])) {
+                        playsound(MeowSound1);
+                    }
+                    if (pointInBlock1(&curser , &menu_block_sound[2])) {
+                        stopAllSound();
+                    }
+                    if (pointInBlock1(&curser , &menu_block_sound[3])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_sound[4])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_sound[5])) {
+
+                    }
+                    if (pointInBlock1(&curser , &menu_block_sound[6])) {
+                        change_volume_by(stoi(menu_block_sound[6].input1));
+                    }
+                    if (pointInBlock1(&curser , &menu_block_sound[7])) {
+                        set_volume(stoi(menu_block_sound[7].input1));
+                    }
+                }
+            }
 
 
 
@@ -1246,9 +1384,84 @@ int main( int argc, char * argv[] ) {
         // SDL_RenderCopy(m_renderer,player1.texture, nullptr, &playerrect1);
 
 
-        SDL_Rect playerrect2 = {player2.x, player2.y, player2.w, player2.h};
-        SDL_RenderCopyEx(m_renderer,player2.texture, nullptr, &playerrect2,player2.angle , &player2.center , player2.flip);
 
+        SDL_SetTextureColorMod(player2.texture,255,255,255);
+        if (player2.colorEffect != 0)
+        {
+            double testrad = player2.colorEffect*M_PI/180.0;
+            Uint8 rnew= 255;
+            Uint8 gnew= 255;
+            Uint8 bnew= 255;
+
+            rnew = Uint8((sin(testrad)*127)+128);
+            gnew = Uint8((sin(testrad+2)*127)+128);
+            bnew = Uint8((sin(testrad+4)*127)+128);
+
+            SDL_SetTextureColorMod(player2.texture,rnew,gnew,bnew);
+        }
+
+
+
+        isshow=player2.isShow;
+        if (isshow)
+        {
+
+            SDL_Rect playerrect2 = {player2.x, player2.y, int(player2.w*player2.size/100.0), int(player2.h*player2.size/100.0)};
+            SDL_RenderCopyEx(m_renderer,player2.texture, nullptr, &playerrect2,player2.angle , &player2.center , player2.flip);
+        }
+
+
+        //sound menu function
+
+        sort(program.begin(), program.end(), program_comp);
+        //running the program
+        if(clicked_flag){
+
+            if(program[0].opCode == "when flag clicked"){
+                for (auto &b: program) {
+                    if (b.opCode == "turn right")turn_right_n_degree(stoi(b.input1), player2);
+                    else if (b.opCode == "turn left")turn_left_n_degree(stoi(b.input1), player2);
+                    else if (b.opCode == "move")move_n_step(player2.angle, stoi(b.input1), player2);
+                    else if (b.opCode == "go to")go_to_pos(b.input1, player2, curser);
+                    else if (b.opCode == "go to:")go_to_cor(stoi(b.input1), stoi(b.input2), player2);
+                    else if (b.opCode == "point in direction")point_in_direction(stoi(b.input1), player2);
+                    else if (b.opCode == "point towards")point_towards(b.input1, curser, player2);
+                    else if (b.opCode == "change x by")change_x_by(stoi(b.input1), player2);
+                    else if (b.opCode == "set x to")set_x_to(stoi(b.input1), player2);
+                    else if (b.opCode == "change y by")change_y_by(stoi(b.input1), player2);
+                    else if (b.opCode == "set y to")set_y_to(stoi(b.input1), player2);
+                    else if (b.opCode == "if on edge bounce")if_on_edge_bounce(player2);
+
+
+                    else if(b.opCode == "say timed"){say_s_for_n_sec(b.input1,stoi(b.input2), player2); say_s_for_n_sec_draw(m_renderer, player2, code_block);}
+                    else if(b.opCode == "say") {say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+                    else if(b.opCode == "think timed") {think_s_for_n_sec(b.input1,stoi(b.input2), player2); think_s_for_n_sec_draw(m_renderer, player2, code_block);}
+                    else if(b.opCode == "think") {think_s(b.input1, player2); think_s_draw(m_renderer, player2, code_block);}
+                    else if(b.opCode == "change size by") {change_size_by(stoi(b.input1), player2);}
+                    else if(b.opCode == "set size to") {set_size_to(stoi(b.input1), player2);}
+                    else if(b.opCode == "change") {change_color_by(stoi(b.input2), player2);}
+                    else if(b.opCode == "clear graphic effect") {clear_graphics(player2);}
+                    else if(b.opCode == "set") {set_color_effect_to(stoi(b.input2), player2);}
+                    else if(b.opCode == "show") {show(player2);}
+                    else if(b.opCode == "hide") {hide(player2);}
+
+
+                    else if(b.opCode == "play sound") {playsound_until(MeowSound1);}
+                    else if(b.opCode == "start sound") {playsound(MeowSound1);}
+                    else if(b.opCode == "stop all sounds") {stopAllSound();}
+                    else if(b.opCode == "change volume by") {change_volume_by(stoi(b.input1));}
+                    else if(b.opCode == "set volume to") {set_volume(stoi(b.input1));}
+
+
+
+
+
+
+
+                }
+                clicked_flag = false;
+            }
+        }
 
 
 
@@ -1257,21 +1470,21 @@ int main( int argc, char * argv[] ) {
 
 
         if (player2.isSayingfor) {
-            say_s_for_n_sec_draw(m_renderer,player2 , mainsaythinkfont);
+            say_s_for_n_sec_draw(m_renderer, player2, code_block);
 
         }
 
         if (player2.isSaying) {
-            say_s_draw(m_renderer, player2, mainsaythinkfont);
+            say_s_draw(m_renderer, player2, code_block);
         }
 
         if (player2.isThinkingfor) {
-            think_s_for_n_sec_draw(m_renderer,player2 , mainsaythinkfont);
+            think_s_for_n_sec_draw(m_renderer, player2, code_block);
 
         }
 
         if (player2.isThinking) {
-            think_s_draw(m_renderer, player2, mainsaythinkfont);
+            think_s_draw(m_renderer, player2, code_block);
 
         }
 
@@ -1299,51 +1512,6 @@ int main( int argc, char * argv[] ) {
 
 
 
-        //sound menu function
-
-        sort(program.begin(), program.end(), program_comp);
-        //running the program
-        if(clicked_flag){
-
-            if(program[0].opCode == "when flag clicked"){
-                for (auto &b: program) {
-                    if (b.opCode == "turn right")turn_right_n_degree(stoi(b.input1), player2);
-                    else if (b.opCode == "turn left")turn_left_n_degree(stoi(b.input1), player2);
-                    else if (b.opCode == "move")move_n_step(player2.angle, stoi(b.input1), player2);
-                    else if (b.opCode == "go to")go_to_pos(b.input1, player2, curser);
-                    else if (b.opCode == "go to:")go_to_cor(stoi(b.input1), stoi(b.input2), player2);
-                    else if (b.opCode == "point in direction")point_in_direction(stoi(b.input1), player2);
-                    else if (b.opCode == "point towards")point_towards(b.input1, curser, player2);
-                    else if (b.opCode == "change x by")change_x_by(stoi(b.input1), player2);
-                    else if (b.opCode == "set x to")set_x_to(stoi(b.input1), player2);
-                    else if (b.opCode == "change y by")change_y_by(stoi(b.input1), player2);
-                    else if (b.opCode == "set y to")set_y_to(stoi(b.input1), player2);
-                    else if (b.opCode == "if on edge bounce")if_on_edge_bounce(player2);
-                    else if(b.opCode == "say") {say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
-//                    else if(b.opCode == "say timed"){say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
-
-
-
-
-
-
-
-                }
-                clicked_flag = false;
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1359,7 +1527,6 @@ int main( int argc, char * argv[] ) {
         SDL_Delay(16);
     }
 
-    cout << player2.x << endl;
 
     SDL_FreeSurface(code_menu_surf2);
     SDL_FreeSurface(costumes_menu_surf2);
