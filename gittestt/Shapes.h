@@ -79,7 +79,7 @@ struct mainsprite {
     int colorEffect = 0;
 
 
-    bool isFacingRight;
+    bool isFacingRight=true;
 
 
     bool isSayingfor=false;
