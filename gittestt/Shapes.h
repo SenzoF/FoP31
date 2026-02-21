@@ -96,6 +96,9 @@ struct mainsprite {
     Uint32 thinkforStartTime = 0;
     Uint32 thinkDuration = 0;
 
+    int centerX=x+w/2;
+    int centerY=y+h/2;
+
 
 
 

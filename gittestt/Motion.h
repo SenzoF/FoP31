@@ -58,11 +58,9 @@ void turn_left_n_degree(double n,mainsprite &sprite) {
 void go_to_pos(string &which, mainsprite &sprite, SDL_Point & curser){
     SDL_Rect where_mouse = {1025, 128, 895, 532};
     if(which == "random position"){
-        int n = 1920, m = 1025;
-        srand(time(nullptr));
-        sprite.x += rand() % (n-m) + m;
-        n = 660, m = 128;
-        sprite.y += rand() % (n-m) + m;
+        // srand(time(nullptr));
+        sprite.x = rand() % where_mouse.w + where_mouse.x;
+        sprite.y = rand() % where_mouse.h + where_mouse.y;
     }
     else if(which == "mouse pointer" and SDL_PointInRect(&curser, &where_mouse)){
         sprite.x = curser.x;
@@ -70,6 +68,93 @@ void go_to_pos(string &which, mainsprite &sprite, SDL_Point & curser){
     }
 
 }
+
+void go_to_cor(int x, int y, mainsprite &sprite){
+    SDL_Rect where_to = {1025, 128, 895, 532};
+    SDL_Point point = {x, y};
+    if(SDL_PointInRect(&point, &where_to)){
+        sprite.x = x;
+        sprite.y = y;
+    }
+}
+
+void glide_to_which(int seconds, string &which, SDL_Point &curser, mainsprite &sprite , Uint32 stime){
+    SDL_Rect where_boundry = {1025, 128, 895, 532};
+    srand(time(nullptr));
+    if(which == "random position"){
+        int targetX = rand() % where_boundry.w+where_boundry.x;
+        int targetY = rand() % where_boundry.h+where_boundry.y;
+        int startX = sprite.x;
+        int startY = sprite.y;
+
+        Uint32 startTime = SDL_GetTicks();
+        Uint32 duration = seconds*1000;
+
+        while (SDL_GetTicks() - startTime < duration)
+        {
+            double t = double(SDL_GetTicks() - startTime) / duration;
+
+            sprite.x = startX + int((targetX-startX)*t);
+            sprite.y = startY + int((targetY-startY)*t);
+
+            SDL_Delay(10);
+        }
+
+void turn_right_n_degree(double n,mainsprite &sprite) {
+    SDL_Rect where_boundry = {1025, 128, 895, 532};
+    SDL_Point point = {sprite.x , sprite.y};
+    if(SDL_PointInRect(&point, &where_boundry)){
+        double angle = n;
+        sprite.angle += angle;
+    }
+    else if(which == "mouse pointer"){
+        int targetX = curser.x;
+        int targetY = curser.y;
+
+        int startX = sprite.x;
+        int startY = sprite.y;
+
+        Uint32 startTime = SDL_GetTicks();
+        Uint32 duration = seconds*1000;
+
+        while (SDL_GetTicks() - startTime < duration)
+        {
+            double t = double(SDL_GetTicks() - startTime) / duration;
+
+            sprite.x = startX + int((targetX-startX)*t);
+            sprite.y = startY + int((targetY-startY)*t);
+
+            SDL_Delay(10);
+        }
+        sprite.x = targetX;
+        sprite.y = targetY;
+    }
+
+
+}
+
+void glide_to_xy(int seconds, int x , int y , mainsprite &sprite){
+    SDL_Rect where_boundry = {1025, 128, 895, 532};
+    SDL_Point point = {x , y};
+    int targetX = rand() % where_boundry.w+where_boundry.x;
+    int targetY = rand() % where_boundry.h+where_boundry.y;
+    int startX = rand() % sprite.x;
+    int startY = rand() % sprite.y;
+
+    Uint32 startTime = SDL_GetTicks();
+    Uint32 duration = seconds*1000;
+
+    while (SDL_GetTicks() - startTime < duration)
+    {
+        double t = double(SDL_GetTicks() - startTime) / duration;
+
+        sprite.x = startX + int((x-startX)*t);
+        sprite.y = startY + int((y-startY)*t);
+
+        SDL_Delay(10);
+    }
+    sprite.x = targetX;
+    sprite.y = targetY;
 
 void go_to_cor(int x, int y, mainsprite &sprite){
     x+=1450;
@@ -81,25 +166,6 @@ void go_to_cor(int x, int y, mainsprite &sprite){
         sprite.y = y;
     }
 }
-
-//void glide(int t, string &which, SDL_Point &curser, mainsprite &sprite){
-//    SDL_Rect where_boundry = {1025, 128, 895, 532};
-//    int x=0, y=0;
-//    if(which == "random position"){
-//        srand(time(nullptr));
-//        int n = 1920, m = 1025;
-//        x = rand() % (n-m) + m;
-//        n = 660, m = 128;
-//        y = rand() % (n-m) + m;
-//    }
-//    else if(which == "mouse pointer"){
-//        x = curser.x;
-//        y = curser.y;
-//    }
-//    int d = int(sqrt((x - sprite.x) * (x - sprite.x) + (y - sprite.y) * (y - sprite.y)));
-//
-//
-//}
 
 void point_in_direction(int angle, mainsprite &sprite){
     SDL_Rect where_boundry = {1025, 128, 895, 532};
@@ -170,8 +236,14 @@ void if_on_edge_bounce(mainsprite &sprite)
     }
 }
 
+void set_rotation_style(mainsprite &sprite)
+{
+    SDL_Rect where_boundry = {1025, 128, 895, 532};
+    SDL_Point point = {sprite.x , sprite.y};
+    if(SDL_PointInRect(&point, &where_boundry)){
 
-
+    }
+}
 
 
 
