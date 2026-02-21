@@ -50,6 +50,8 @@ struct block1 {
 
     SDL_Point topSnap;
     SDL_Point bottomSnap;
+
+    int final_indicator = 0;
 };
 struct block2 {
     int x, y, w, h;
@@ -393,16 +395,16 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
         textToRender1 = " ";
     }
     string textToRender2 = block.input2;
-    if(textToRender1.empty()){
+    if(textToRender2.empty()){
         textToRender2 = " ";
     }
 
     // for the first rectangle
-    SDL_Surface* text_box1_surf = TTF_RenderText_Blended(block.font, textToRender1.c_str(), black);
+    SDL_Surface* text_box1_surf = TTF_RenderText_Blended(block.font, textToRender1.c_str(), light_gray);
     SDL_Texture* text_box1_tex = SDL_CreateTextureFromSurface(m_renderer, text_box1_surf);
     SDL_Rect text_box1_rect = {helpX + b_text_rect.w +h/6, block.y + block.h /2 - text_box1_surf->h/2, text_box1_surf->w, text_box1_surf->h};
     //for the second rectangle
-    SDL_Surface* text_box2_surf = TTF_RenderText_Blended(block.font, textToRender2.c_str(), black);
+    SDL_Surface* text_box2_surf = TTF_RenderText_Blended(block.font, textToRender2.c_str(), light_gray);
     SDL_Texture* text_box2_tex = SDL_CreateTextureFromSurface(m_renderer, text_box2_surf);
     SDL_Rect text_box2_rect = {text_box1_rect.x + text_box1_rect.w +h/6, block.y + block.h /2 - text_box2_surf->h/2, text_box2_surf->w, text_box2_surf->h};
     //for the final rect.
@@ -417,13 +419,13 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
     SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
     SDL_RenderFillRect(m_renderer, &rect1);
 
-    if(block.isFocused1)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
-    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
-    if(!(block.input1==" "))SDL_RenderFillRect(m_renderer, &block.text_box1);
-
-    if(block.isFocused2)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
-    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
-    if(!(block.input2==" "))SDL_RenderFillRect(m_renderer, &block.text_box2);
+//    if(block.isFocused1)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+//    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+//    if(!(block.input1==" "))SDL_RenderFillRect(m_renderer, &block.text_box1);
+//
+//    if(block.isFocused2)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+//    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+//    if(!(block.input2==" "))SDL_RenderFillRect(m_renderer, &block.text_box2);
 
     block.w = int (abs( x - (rect1.x + rect1.w) ));
     block.text_box1 = {text_box1_rect.x, text_box1_rect.y, text_box1_rect.w + 3, text_box1_rect.h};
@@ -434,7 +436,6 @@ void drawBlock1(SDL_Renderer *m_renderer, block1& block){
     SDL_RenderCopy(m_renderer, b_tex, nullptr, &b_text_rect);
 
     if(!(block.input1==" "))SDL_RenderCopy(m_renderer, text_box1_tex, nullptr, &text_box1_rect);
-
     if(!(block.input2==" "))SDL_RenderCopy(m_renderer, text_box2_tex, nullptr, &text_box2_rect);
 
     //setting the width here.
@@ -484,16 +485,16 @@ void drawBlock2 (SDL_Renderer *m_renderer, block1& block){
         textToRender1 = " ";
     }
     string textToRender2 = block.input2;
-    if(textToRender1.empty()){
+    if(textToRender2.empty()){
         textToRender2 = " ";
     }
 
     // for the first rectangle
-    SDL_Surface* text_box1_surf = TTF_RenderText_Blended(block.font, textToRender1.c_str(), black);
+    SDL_Surface* text_box1_surf = TTF_RenderText_Blended(block.font, textToRender1.c_str(), light_gray);
     SDL_Texture* text_box1_tex = SDL_CreateTextureFromSurface(m_renderer, text_box1_surf);
     SDL_Rect text_box1_rect = {helpX + b_text_rect.w +h/6, block.y + block.h /2 - text_box1_surf->h/2, text_box1_surf->w, text_box1_surf->h};
     //for the second rectangle
-    SDL_Surface* text_box2_surf = TTF_RenderText_Blended(block.font, textToRender2.c_str(), black);
+    SDL_Surface* text_box2_surf = TTF_RenderText_Blended(block.font, textToRender2.c_str(), light_gray);
     SDL_Texture* text_box2_tex = SDL_CreateTextureFromSurface(m_renderer, text_box2_surf);
     SDL_Rect text_box2_rect = {text_box1_rect.x + text_box1_rect.w +h/6, block.y + block.h /2 - text_box2_surf->h/2, text_box2_surf->w, text_box2_surf->h};
     //for the final rect.
@@ -508,13 +509,13 @@ void drawBlock2 (SDL_Renderer *m_renderer, block1& block){
     SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
     SDL_RenderFillRect(m_renderer, &rect1);
 
-    if(block.isFocused1)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
-    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
-    if(!(block.input1==" "))SDL_RenderFillRect(m_renderer, &block.text_box1);
-
-    if(block.isFocused2)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
-    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
-    if(!(block.input2==" "))SDL_RenderFillRect(m_renderer, &block.text_box2);
+//    if(block.isFocused1)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+//    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+//    if(!(block.input1==" "))SDL_RenderFillRect(m_renderer, &block.text_box1);
+//
+//    if(block.isFocused2)SDL_SetRenderDrawColor(m_renderer, block.text_box_focusedC.r, block.text_box_focusedC.g, block.text_box_focusedC.b, block.text_box_focusedC.a);
+//    else SDL_SetRenderDrawColor(m_renderer, block.text_box_normalC.r, block.text_box_normalC.g, block.text_box_normalC.b, block.text_box_normalC.a);
+//    if(!(block.input2==" "))SDL_RenderFillRect(m_renderer, &block.text_box2);
 
     block.w = int (abs( x - (rect1.x + rect1.w) ));
     block.text_box1 = {text_box1_rect.x, text_box1_rect.y, text_box1_rect.w + 3, text_box1_rect.h};
@@ -559,6 +560,9 @@ bool pointInBlock1(const SDL_Point* point, const block1* block){
 }
 
 
+bool program_comp(block1 &b1, block1 &b2){
+    return b1.y < b2.y;
+}
 
 
 

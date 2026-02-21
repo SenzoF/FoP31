@@ -288,6 +288,7 @@ int main( int argc, char * argv[] ) {
         under_sprite[i] = {sprite_property[0].x + i, sprite_property[0].y + sprite_property[0].h + i, DM.w - under_sprite[i].x - 2 * i, DM.w - under_sprite[i].y - 2 * i};
     }
 
+//    cout << sprite_property[n-1].x << endl << sprite_property[n-1].y << endl << sprite_property[n-1].w << endl << sprite_property[n-1].h << endl << DM.w;
 
 
     //rest of the fonts also here
@@ -295,17 +296,7 @@ int main( int argc, char * argv[] ) {
     //under sprite territory fonts and stuff
 
     //choosing sprite
-    //text
-    SDL_Surface* sprite_choose_sur = TTF_RenderText_Blended(code_block, "Sprite", black);
-    SDL_Texture* sprite_choose_tex = SDL_CreateTextureFromSurface(m_renderer, sprite_choose_sur);
-    SDL_Rect sprite_choose_rect = {under_sprite[0].x + 50, under_sprite[0].y + 50, sprite_choose_sur->w, sprite_choose_sur->h};
-    //input box
-    SDL_Rect sprite_name_input = {sprite_choose_rect.x + 50, sprite_choose_rect.y, 300, sprite_choose_rect.h};
-    string sprite_name;
 
-    SDL_Surface* sprite_name_sur = TTF_RenderText_Blended(code_block, "Sprite1", black);
-    SDL_Texture* sprite_name_tex = SDL_CreateTextureFromSurface(m_renderer, sprite_name_sur);
-    SDL_Rect sprite_name_rect = {sprite_name_input.x, sprite_name_input.y, sprite_name_sur->w, sprite_name_sur->h};
 
 
 
@@ -369,7 +360,7 @@ int main( int argc, char * argv[] ) {
         i.font = code_block;
         i.opCode = "say";
     }
-    menu_block_looks[0].opCode = "say"; menu_block_looks[0].input1 = "Hello!"; menu_block_looks[0].input2 = "2";
+    menu_block_looks[0].opCode = "say timed"; menu_block_looks[0].input1 = "Hello!"; menu_block_looks[0].input2 = "2";
     menu_block_looks[1].opCode = "say"; menu_block_looks[1].input1 = "Hello!"; menu_block_looks[1].input2 = " ";
     menu_block_looks[2].opCode = "think"; menu_block_looks[2].input1 = "hmm..."; menu_block_looks[2].input2 = "2";
     menu_block_looks[3].opCode = "think"; menu_block_looks[3].input1 = "hmm..."; menu_block_looks[3].input2 = " ";
@@ -415,6 +406,7 @@ int main( int argc, char * argv[] ) {
         i.color = yellow;
         i.font = code_block;
         i.opCode = "set";
+        i.final_indicator = 1;
     }
     menu_block_events[0].opCode = "when flag clicked"; menu_block_events[0].input1 = " "; menu_block_events[0].input2 = " ";
     menu_block_events[1].opCode = "when key pressed"; menu_block_events[1].input1 = "space"; menu_block_events[1].input2 = " ";
@@ -716,15 +708,7 @@ int main( int argc, char * argv[] ) {
                         clicked_redCircle = !clicked_redCircle;
                     }
 
-                    //for entering sprites name
-                    if(SDL_PointInRect(&curser, &sprite_name_rect)){
-                        clicked_sprite_name_box = true;
-                        SDL_StartTextInput();
-                    }
-                    else{
-                        clicked_sprite_name_box = false;
-                        SDL_StopTextInput();
-                    }
+
                 }
             }
 
@@ -860,42 +844,12 @@ int main( int argc, char * argv[] ) {
             }
             // ----------------------------------------------------------------------------
 
-            //for taking sprites name
-            if(clicked_sprite_name_box){
-                if(e.type == SDL_KEYDOWN){
-                    if(e.key.keysym.sym == SDLK_BACKSPACE and !sprite_name.empty()){
-                        sprite_name.pop_back();
-                    }
-                }
-                if(e.type == SDL_TEXTINPUT){
 
-                    if(sprite_name.length() < 15){
-                        sprite_name += e.text.text;
-                    }
-
-
-
-
-                }
-
-
-            }
 
 
 
         }
 
-        if(clicked_sprite_name_box){
-            SDL_FreeSurface(sprite_name_sur);
-            SDL_DestroyTexture(sprite_name_tex);
-            const char * display_text = sprite_name.empty() ? " " : sprite_name.c_str();
-
-            sprite_name_sur = TTF_RenderText_Blended(code_block, display_text, black);
-            sprite_name_tex = SDL_CreateTextureFromSurface(m_renderer, sprite_name_sur);
-            sprite_name_rect.w = sprite_name_sur->w;
-            sprite_name_rect.h = sprite_name_sur->h;
-        }
-        SDL_RenderCopy(m_renderer, sprite_name_tex, nullptr, &sprite_name_rect);
 
         //first rendering the total bkgr
         SDL_SetRenderDrawColor(m_renderer, 50, 50, 50, 255);
@@ -926,34 +880,33 @@ int main( int argc, char * argv[] ) {
             SDL_SetRenderDrawColor(m_renderer, 0, 87+5*i, 87+5*i, 255);
             SDL_RenderFillRect(m_renderer, &behind_buttons[i]);
 
-        SDL_SetRenderDrawColor(m_renderer, light_gray.r, light_gray.g, light_gray.b, light_gray.a);
-        SDL_RenderFillRect(m_renderer, &behind_buttons[4]);
-        //green flag.
-        if(clicked_flag) SDL_SetRenderDrawColor(m_renderer, deep_orange.r, deep_orange.g, deep_orange.b, deep_orange.a);
-        else SDL_SetRenderDrawColor(m_renderer, dark_green.r, dark_green.g, dark_green.b, dark_green.a);
-        SDL_RenderFillRect(m_renderer, &execution_rect1); SDL_RenderFillRect(m_renderer, &execution_rect2);
-        //red stop circle
-        if(clicked_redCircle){
-            aaFilledCircleRGBA(m_renderer, terminate_circle.x, terminate_circle.y, terminate_circle.r, purple.r, purple.g, purple.b, purple.a);
-        }
-        else {
-            aaFilledCircleRGBA(m_renderer, terminate_circle.x, terminate_circle.y, terminate_circle.r, 255, 0, 0, 255);
+            SDL_SetRenderDrawColor(m_renderer, light_gray.r, light_gray.g, light_gray.b, light_gray.a);
+            SDL_RenderFillRect(m_renderer, &behind_buttons[4]);
+            //green flag.
+            if(clicked_flag) SDL_SetRenderDrawColor(m_renderer, deep_orange.r, deep_orange.g, deep_orange.b, deep_orange.a);
+            else SDL_SetRenderDrawColor(m_renderer, dark_green.r, dark_green.g, dark_green.b, dark_green.a);
+            SDL_RenderFillRect(m_renderer, &execution_rect1); SDL_RenderFillRect(m_renderer, &execution_rect2);
+            //red stop circle
+            if(clicked_redCircle){
+                aaFilledCircleRGBA(m_renderer, terminate_circle.x, terminate_circle.y, terminate_circle.r, purple.r, purple.g, purple.b, purple.a);
+            }
+            else {
+                aaFilledCircleRGBA(m_renderer, terminate_circle.x, terminate_circle.y, terminate_circle.r, 255, 0, 0, 255);
 
-        }
-
-        SDL_RenderCopy(m_renderer, sprite_choose_tex, nullptr, &sprite_choose_rect);
+            }
 
 
-        //sprite property and under it
-        for(int i=0; i<n; i++){
-            SDL_SetRenderDrawColor(m_renderer, 0, 87+5*i, 87+5*i, 255);
-            SDL_RenderFillRect(m_renderer, &sprite_property[i]);
-            SDL_RenderFillRect(m_renderer, &under_sprite[i]);
-        }
-        SDL_SetRenderDrawColor(m_renderer, 240, 240, 240, 255);
-        SDL_RenderFillRect(m_renderer, &sprite_property[n-1]);
-        SDL_SetRenderDrawColor(m_renderer, 220, 220, 220, 255);
-        SDL_RenderFillRect(m_renderer, &under_sprite[n-1]);
+
+            //sprite property and under it
+            for(int i=0; i<n; i++){
+                SDL_SetRenderDrawColor(m_renderer, 0, 87+5*i, 87+5*i, 255);
+                SDL_RenderFillRect(m_renderer, &sprite_property[i]);
+                SDL_RenderFillRect(m_renderer, &under_sprite[i]);
+            }
+            SDL_SetRenderDrawColor(m_renderer, 240, 240, 240, 255);
+            SDL_RenderFillRect(m_renderer, &sprite_property[n-1]);
+            SDL_SetRenderDrawColor(m_renderer, 220, 220, 220, 255);
+            SDL_RenderFillRect(m_renderer, &under_sprite[n-1]);
 
 
 
@@ -1247,6 +1200,12 @@ int main( int argc, char * argv[] ) {
 
 
 
+            //drawing looks blocks
+            for(auto &b:program){
+                if(b.final_indicator == 0)drawBlock1(m_renderer, b);
+                if(b.final_indicator == 1)drawBlock2(m_renderer, b);
+            }
+
 
 
         }
@@ -1272,7 +1231,10 @@ int main( int argc, char * argv[] ) {
 
         //temp drawing for the blocks getting dragged.
         if(isDragging){
-            drawBlock1(m_renderer ,tempDraggingBlock);
+            if(tempDraggingBlock.final_indicator==0)drawBlock1(m_renderer ,tempDraggingBlock);
+            else if(tempDraggingBlock.final_indicator==1)drawBlock2(m_renderer ,tempDraggingBlock);
+
+
         }
 
 
@@ -1331,7 +1293,53 @@ int main( int argc, char * argv[] ) {
         }
 
 
+
+
+
+
+
+
         //sound menu function
+
+        sort(program.begin(), program.end(), program_comp);
+        //running the program
+        if(clicked_flag){
+
+            if(program[0].opCode == "when flag clicked"){
+                for (auto &b: program) {
+                    if (b.opCode == "turn right")turn_right_n_degree(stoi(b.input1), player2);
+                    else if (b.opCode == "turn left")turn_left_n_degree(stoi(b.input1), player2);
+                    else if (b.opCode == "move")move_n_step(player2.angle, stoi(b.input1), player2);
+                    else if (b.opCode == "go to")go_to_pos(b.input1, player2, curser);
+                    else if (b.opCode == "go to:")go_to_cor(stoi(b.input1), stoi(b.input2), player2);
+                    else if (b.opCode == "point in direction")point_in_direction(stoi(b.input1), player2);
+                    else if (b.opCode == "point towards")point_towards(b.input1, curser, player2);
+                    else if (b.opCode == "change x by")change_x_by(stoi(b.input1), player2);
+                    else if (b.opCode == "set x to")set_x_to(stoi(b.input1), player2);
+                    else if (b.opCode == "change y by")change_y_by(stoi(b.input1), player2);
+                    else if (b.opCode == "set y to")set_y_to(stoi(b.input1), player2);
+                    else if (b.opCode == "if on edge bounce")if_on_edge_bounce(player2);
+                    else if(b.opCode == "say") {say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+//                    else if(b.opCode == "say timed"){say_s(b.input1, player2); say_s_draw(m_renderer, player2, code_block);}
+
+
+
+
+
+
+
+                }
+                clicked_flag = false;
+            }
+        }
+
+
+
+
+
+
+
+
 
 
 
@@ -1351,6 +1359,7 @@ int main( int argc, char * argv[] ) {
         SDL_Delay(16);
     }
 
+    cout << player2.x << endl;
 
     SDL_FreeSurface(code_menu_surf2);
     SDL_FreeSurface(costumes_menu_surf2);
@@ -1376,7 +1385,6 @@ int main( int argc, char * argv[] ) {
     SDL_FreeSurface(my_blocks2_surf);
     SDL_FreeSurface(my_blocks_surf);
     SDL_FreeSurface(my_scratch_sur);
-    SDL_FreeSurface(sprite_choose_sur);
 
 
 
@@ -1405,7 +1413,6 @@ int main( int argc, char * argv[] ) {
     SDL_DestroyTexture(my_blocks_tex);
     SDL_DestroyTexture(my_blocks2_tex);
     SDL_DestroyTexture(my_scratch_tex);
-    SDL_DestroyTexture(sprite_choose_tex);
 
     TTF_CloseFont(menu_font_clicked);
     TTF_CloseFont(menu_font_normal);

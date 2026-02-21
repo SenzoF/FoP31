@@ -17,7 +17,7 @@
 #include <conio.h>
 #include <cstring>
 #include <SDL2/SDL_mixer.h>
-
+#include <ctime>
 using namespace std;
 
 #endif //GITTESTT_ESSENTIALS_H
