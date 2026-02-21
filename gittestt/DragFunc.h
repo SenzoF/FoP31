@@ -16,6 +16,9 @@ bool mouseIsInside (const block1& block1 , int x , int y) {
 bool mouseIsInside2 (vector<block1> &block1 , int x , int y , int i) {
     return((x>= block1[i].x) && (x<= block1[i].x + block1[i].w) && (y>= block1[i].y) && (y<= block1[i].y + block1[i].h));
 }
+bool mouseIsInside3 (SDL_Rect &rect , int x , int y) {
+    return((x>= rect.x) && (x<= rect.x + rect.w) && (y>= rect.y) && (y<= rect.y + rect.h));
+}
 
 static void drag1(SDL_Event& e,block1 & block1) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
