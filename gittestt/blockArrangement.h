@@ -19,7 +19,8 @@ vector<block1> menu_block_sound(size_sound);
 //events block making
 int size_events = 8;
 vector<block1> menu_block_events(size_events);
-
+int size_control = 7;
+vector<block1> menu_block_control(size_control);
 
 
 
