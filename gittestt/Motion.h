@@ -29,9 +29,19 @@ void move_n_step(double angle, int n, mainsprite &sprite) {
     SDL_Rect where_boundry = {1025, 128, 895, 532};
     SDL_Point point = {sprite.x , sprite.y};
     if(SDL_PointInRect(&point, &where_boundry)){
-        double rad = angle * M_PI / 180;
-        sprite.x += int(cos(rad) * n);
-        sprite.y += int(sin(rad) * n);
+
+        if (sprite.isFacingRight)
+        {
+            double rad = angle * M_PI / 180;
+            sprite.x += int(cos(rad) * n);
+            sprite.y += int(sin(rad) * n);
+        }
+        else
+        {
+            double rad = angle * M_PI / 180;
+            sprite.x -= int(cos(rad) * n);
+            sprite.y -= int(sin(rad) * n);
+        }
     }
 
 }
@@ -59,8 +69,8 @@ void go_to_pos(string &which, mainsprite &sprite, SDL_Point & curser){
     SDL_Rect where_mouse = {1025, 128, 895, 532};
     if(which == "random position"){
         // srand(time(nullptr));
-        sprite.x = rand() % where_mouse.w + where_mouse.x;
-        sprite.y = rand() % where_mouse.h + where_mouse.y;
+        sprite.x =  where_mouse.x+rand() % where_mouse.w;
+        sprite.y =  where_mouse.y+rand() % where_mouse.h;
     }
     else if(which == "mouse pointer" and SDL_PointInRect(&curser, &where_mouse)){
         sprite.x = curser.x;
@@ -146,7 +156,8 @@ void point_towards(string &which, SDL_Point curser, mainsprite &sprite){
     SDL_Rect where_boundry = {1025, 128, 895, 532};
     SDL_Point point = {curser.x, curser.y};
     if(which == "mouse" and SDL_PointInRect(&point, &where_boundry)){
-        sprite.angle = -atan((sprite.x - curser.x) / (sprite.y - curser.y)) * 180 / (M_PI);
+        // sprite.angle = -atan((sprite.x - curser.x) / (sprite.y - curser.y)) * 180 / (M_PI);
+        sprite.angle = atan2( curser.y-sprite.y,curser.x-sprite.x)*180.0/M_PI;
     }
 }
 void change_x_by(int x, mainsprite &sprite){
@@ -166,7 +177,7 @@ void set_x_to(int X, mainsprite &sprite){
 }
 void change_y_by(int y, mainsprite &sprite){
     SDL_Rect where_boundry = {1025, 128, 895, 532};
-    int Y = y + sprite.y;
+    int Y = -y + sprite.y;
     if(Y >= where_boundry.y and Y <= where_boundry.y + where_boundry.h){
         sprite.y = Y;
     }
@@ -193,13 +204,31 @@ void if_on_edge_bounce(mainsprite &sprite)
     SDL_Rect where_boundry = {1025, 128, 895, 532};
     SDL_Point point = {sprite.x , sprite.y};
 
-    if (sprite.x <=where_boundry.x || sprite.x >= where_boundry.x + where_boundry.w)
+    if (sprite.x <=where_boundry.x )
     {
-        sprite.angle = 180 - sprite.angle;
+        sprite.x = where_boundry.x;
+        sprite.angle = -sprite.angle;
+        sprite.isFacingRight=true;
+
     }
-    if (sprite.y <=where_boundry.y || sprite.y >= where_boundry.y + where_boundry.h)
+    if (sprite.x + sprite.w >= where_boundry.x + where_boundry.w)
     {
-        sprite.angle *= -1;
+        sprite.x = where_boundry.x + where_boundry.w - sprite.w;
+        sprite.angle = 180 - sprite.angle;
+        sprite.isFacingRight=false;
+    }
+    if (sprite.y <=where_boundry.y || sprite.y+sprite.h >= where_boundry.y + where_boundry.h)
+    {
+        sprite.angle = -sprite.angle;
+    }
+
+    while (sprite.angle <0)
+    {
+        sprite.angle += 360;
+    }
+    while (sprite.angle >= 360)
+    {
+        sprite.angle -= 360;
     }
 }
 

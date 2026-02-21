@@ -75,6 +75,9 @@ struct mainsprite {
         center.y = h/2;
     }
 
+    int size = 100;
+    int colorEffect = 0;
+
 
     bool isFacingRight;
 
@@ -99,6 +102,7 @@ struct mainsprite {
     int centerX=x+w/2;
     int centerY=y+h/2;
 
+    bool isShow=true;
 
 
 
