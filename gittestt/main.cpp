@@ -1270,7 +1270,7 @@ int main( int argc, char * argv[] ) {
                     else if(clicked_sensing){activeMenu = &menu_block_sensing; activeFocusArea = 1;}
                     else if(clicked_motion) { activeMenu = &menu_block_motion; activeFocusArea = 1;}
                     else if(clicked_operators) { activeMenu = &menu_block_operators; activeFocusArea = 1;}
-                    else if(clicked_operators) { activeMenu = &menu_block_looks; activeFocusArea = 1;}
+                    else if(clicked_looks) { activeMenu = &menu_block_looks; activeFocusArea = 1;}
                     else if(clicked_sound) { activeMenu = &menu_block_sound; activeFocusArea = 1;}
                     else if(clicked_events) {  activeMenu = &menu_block_events; activeFocusArea = 1;}
                     else if(clicked_control) { activeMenu = &menu_block_control; activeFocusArea = 1;}
