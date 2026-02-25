@@ -47,8 +47,7 @@ void say_s_for_n_sec_draw(SDL_Renderer *renderer, mainsprite &player2,TTF_Font *
 
     SDL_RenderCopy(renderer, saytex1, nullptr, &sayrect1);
 
-    SDL_FreeSurface(saysurf1);
-    SDL_DestroyTexture(saytex1);
+
 }
 
 void say_s(string s, mainsprite &sprite) {
@@ -185,6 +184,68 @@ void think_s_draw(SDL_Renderer *renderer, mainsprite &player2,TTF_Font *mainsayt
     SDL_RenderCopy(renderer, saytex1, nullptr, &sayrect1);
 
 
+}
+
+void change_size_by(int size ,mainsprite &sprite)
+{
+    sprite.size+=size;
+    if (sprite.size>1000)
+    {
+        sprite.size=1000;
+    }
+    if (sprite.size<1)
+    {
+        sprite.size=1;
+    }
+}
+
+void set_size_to(int n, mainsprite &sprite)
+{
+    if (n<1)
+    {
+        n=1;
+    }
+    if (n>1000)
+    {
+        n=1000;
+    }
+    sprite.size=n;
+}
+
+void change_color_by(int n, mainsprite &sprite)
+{
+    sprite.colorEffect+=n;
+    if (sprite.colorEffect>360)
+    {
+        sprite.colorEffect%=360;
+    }
+    if (sprite.colorEffect<0)
+    {
+        sprite.colorEffect+=360;
+    }
+}
+
+void set_color_effect_to(int n, mainsprite &sprite)
+{
+    sprite.colorEffect=n%360;
+    if (sprite.colorEffect<0)
+    {
+        sprite.colorEffect+=360;
+    }
+}
+
+void clear_graphics(mainsprite &sprite)
+{
+    sprite.colorEffect=0;
+}
+
+void show(mainsprite &sprite)
+{
+    sprite.isShow = true;
+}
+void hide(mainsprite &sprite)
+{
+    sprite.isShow = false;
 }
 
 #endif //GITTESTT_LOOKMENU_H

@@ -39,5 +39,19 @@ void stopAllSound() {
 //         Mix_OpenAudio(22000, MIX_DEFAULT_FORMAT, 2, 2048);
 //     }
 // }
+int systemvolume=128;
+
+void change_volume_by(int volume)
+{
+    systemvolume += volume;
+    if (systemvolume < 0) systemvolume = 0;
+    if (systemvolume > 128) systemvolume = 128;
+    Mix_Volume(-1,systemvolume);
+}
+
+void set_volume(int volume)
+{
+    Mix_Volume(-1,volume);
+}
 
 #endif //GITTESTT_SOUNDMENU_H
