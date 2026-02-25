@@ -157,7 +157,15 @@ void divide_operators(SDL_Renderer * m_renderer, block1 &b){
 
     int x = stoi(b.input1);
     int y = stoi(b.input2);
-    string to_print = to_string(x/y);
+    string to_print;
+    if (y!=0)
+    {
+        to_print = to_string(x/y);
+    }
+    else
+    {
+        to_print = "NaN";
+    }
 
     SDL_Surface * b_surf = TTF_RenderText_Blended(b.font, to_print.c_str(), black);
     SDL_Texture *b_tex = SDL_CreateTextureFromSurface(m_renderer, b_surf);
@@ -315,9 +323,10 @@ void logical_not_operators(SDL_Renderer * m_renderer, block1 &b){
 }
 void join_operators(SDL_Renderer * m_renderer, block1 &b){
 
-    int x = stoi(b.input1);
-    int y = stoi(b.input2);
-    string to_print = to_string(x) + to_string(y);
+    // int x = stoi(b.input1);
+    // int y = stoi(b.input2);
+    // string to_print = to_string(x) + to_string(y);
+    string to_print = b.input1+b.input2;
     SDL_Surface * b_surf = TTF_RenderText_Blended(b.font, to_print.c_str(), black);
     SDL_Texture *b_tex = SDL_CreateTextureFromSurface(m_renderer, b_surf);
     SDL_Rect b_text_rect = {b.x, b.y + b.h, b_surf->w, b_surf->h};
