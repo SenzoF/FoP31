@@ -81,6 +81,7 @@ void go_to_pos(string &which, mainsprite &sprite, SDL_Point & curser){
 
 void go_to_cor(int x, int y, mainsprite &sprite){
     x+=1450;
+    y*=-1;
     y+=350;
     SDL_Rect where_to = {1025, 128, 895, 532};
     SDL_Point point = {x, y};

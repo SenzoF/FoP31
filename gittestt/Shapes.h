@@ -15,6 +15,13 @@ struct CurveyRect {
     int x, y, r, w, h;
 
 };
+struct inputBox{
+    int x, y, w, h;
+    TTF_Font *font;
+};
+
+
+
 struct CompleteCurveyRect {
     int x, y, r, w, h;
 };
@@ -52,7 +59,17 @@ struct block1 {
     SDL_Point bottomSnap;
 
     int final_indicator = 0;
+    int topHeight = 25;
+    int spineWidth = 15;
+    int bottomHeight = 20;
+    int mouthHeight = 30;
+
+    int middleBarHeight = 30;
+    int mouth2Height = 40;
 };
+
+
+
 struct block2 {
     int x, y, w, h;
     SDL_Color color;
@@ -104,7 +121,8 @@ struct mainsprite {
 
     bool isShow=true;
 
-
+    bool isPenDown = false;
+    SDL_Color penColor = {0, 0, 255, 255};
 
 };
 
@@ -281,7 +299,7 @@ bool PointInCircle(const SDL_Point* point, const Circle* c){
     if(point and c){
         int dx = point->x - c->x;
         int dy = point->y - c->y;
-        return dx*dx - dy*dy <= c->r*c->r;
+        return dx*dx + dy*dy <= c->r*c->r;
     }
     return false;
 }
@@ -566,6 +584,13 @@ bool pointInBlock1(const SDL_Point* point, const block1* block){
     return false;
 }
 
+bool pointInBlock1_2(const SDL_Point* point, const block1* block){
+    if(point->x >= block->x and point ->x <= (block->x + block->w) and point->y >= block->y and point ->y <= (block->y + block->h)){
+        return true;
+    }
+    return false;
+}
+
 
 bool program_comp(block1 &b1, block1 &b2){
     return b1.y < b2.y;
@@ -574,6 +599,109 @@ bool program_comp(block1 &b1, block1 &b2){
 
 
 
+void drawIfElseBlock(SDL_Renderer * m_renderer,  block1& b){
+    SDL_SetRenderDrawColor(m_renderer, b.color.r, b.color.g,b.color.b,255);
+
+    SDL_Rect topRect = {b.x, b.y, b.w, b.topHeight};
+    SDL_RenderFillRect(m_renderer, &topRect);
+
+    SDL_Rect spineRect1 = {b.x, b.y + b.topHeight, b.spineWidth, b.mouthHeight};
+    SDL_RenderFillRect(m_renderer, &spineRect1);
+
+    SDL_Rect middle = {b.x, b.y + b.topHeight + b.mouthHeight, b.w, b.middleBarHeight};
+    SDL_RenderFillRect(m_renderer, &middle);
+
+    SDL_Rect spineRect2 = {b.x, b.y + b.topHeight + b.mouthHeight + b.middleBarHeight, b.spineWidth, b.mouth2Height};
+    SDL_RenderFillRect(m_renderer, &spineRect2);
+
+    SDL_Rect bottom = {b.x, b.y + b.topHeight + b.mouthHeight + b.middleBarHeight + b.mouth2Height, b.w, b.bottomHeight};
+    SDL_RenderFillRect(m_renderer, &bottom);
+
+
+
+
+    b.h = b.topHeight + b.mouthHeight + b.middleBarHeight + b.mouth2Height + b.bottomHeight;
+
+
+}
+
+
+
+void drawBlock3(SDL_Renderer * m_renderer,  block1& block) {
+    int x = block.x, y = block.y, h = block.h, w = block.w;
+    int R = block.color.r, G = block.color.g, B = block.color.b, A = block.color.a;
+    vector<Sint16> x1 = {(Sint16) x, (Sint16) (x - h / (2 * sqrt(3))), (Sint16) x};
+    vector<Sint16> y1 = {(Sint16) y, (Sint16) (y + h / 2), (Sint16) (y + h)};
+    filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+    aapolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+    SDL_Rect rect1 = {x, y, h, h + 1};
+    SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
+    SDL_RenderFillRect(m_renderer, &rect1);
+
+
+
+    //for opCode writing on the block.
+    SDL_Surface *b_surf = TTF_RenderText_Blended(block.font, block.opCode.c_str(), black);
+    SDL_Texture *b_tex = SDL_CreateTextureFromSurface(m_renderer, b_surf);
+    int helpY = (int) (((y + (h * sqrt(3) / 6)) + (y + h)) / 2 - b_surf->h / 2.0);
+    int helpX = (int) (x + h / 3);
+    SDL_Rect b_text_rect = {helpX, helpY, b_surf->w, b_surf->h};
+
+    string textToRender1 = block.input1;
+    if (textToRender1.empty()) {
+        textToRender1 = " ";
+    }
+    string textToRender2 = block.input2;
+    if (textToRender2.empty()) {
+        textToRender2 = " ";
+    }
+
+    // for the first rectangle
+    SDL_Surface *text_box1_surf = TTF_RenderText_Blended(block.font, textToRender1.c_str(), light_gray);
+    SDL_Texture *text_box1_tex = SDL_CreateTextureFromSurface(m_renderer, text_box1_surf);
+    SDL_Rect text_box1_rect = {helpX + b_text_rect.w + h / 6, block.y + block.h / 2 - text_box1_surf->h / 2,
+                               text_box1_surf->w, text_box1_surf->h};
+    //for the second rectangle
+    SDL_Surface *text_box2_surf = TTF_RenderText_Blended(block.font, textToRender2.c_str(), light_gray);
+    SDL_Texture *text_box2_tex = SDL_CreateTextureFromSurface(m_renderer, text_box2_surf);
+    SDL_Rect text_box2_rect = {text_box1_rect.x + text_box1_rect.w + h / 6,
+                               block.y + block.h / 2 - text_box2_surf->h / 2, text_box2_surf->w, text_box2_surf->h};
+    //for the final rect.
+    rect1 = {x + h, y, text_box2_rect.x + text_box2_rect.w - (x + h) + 2 * h / 6, h + 1};
+
+    //the final polygon
+    x1 = {(Sint16) (rect1.x + rect1.w), (Sint16) (h / (2 * sqrt(3)) + rect1.x + rect1.w), (Sint16) (rect1.x + rect1.w)};
+    y1 = {(Sint16) (y), (Sint16) (y + h / 2), (Sint16) (y + h)};
+    filledPolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+    aapolygonRGBA(m_renderer, x1.data(), y1.data(), 3, R, G, B, A);
+
+    SDL_SetRenderDrawColor(m_renderer, R, G, B, A);
+    SDL_RenderFillRect(m_renderer, &rect1);
+
+
+    block.w = int(abs(x - (rect1.x + rect1.w)));
+    block.text_box1 = {text_box1_rect.x, text_box1_rect.y, text_box1_rect.w + 3, text_box1_rect.h};
+    block.text_box2 = {text_box2_rect.x, text_box2_rect.y, text_box2_rect.w + 3, text_box2_rect.h};
+
+
+    SDL_RenderCopy(m_renderer, b_tex, nullptr, &b_text_rect);
+
+    if (!(block.input1 == " "))SDL_RenderCopy(m_renderer, text_box1_tex, nullptr, &text_box1_rect);
+
+    if (!(block.input2 == " "))SDL_RenderCopy(m_renderer, text_box2_tex, nullptr, &text_box2_rect);
+
+    //setting the width here.
+
+
+    SDL_FreeSurface(b_surf);
+    SDL_DestroyTexture(b_tex);
+    SDL_FreeSurface(text_box1_surf);
+    SDL_DestroyTexture(text_box1_tex);
+    SDL_FreeSurface(text_box2_surf);
+    SDL_DestroyTexture(text_box2_tex);
+
+
+}
 
 
 #endif //FOP_PROJECT_ALI_SHAPES_H

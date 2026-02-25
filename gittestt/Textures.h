@@ -53,6 +53,9 @@ SDL_Color dark_deep_orange = {204, 102, 0, 255};
 SDL_Color pink = {255, 0, 127, 255};
 SDL_Color dark_pink = {204, 102, 102, 255};
 SDL_Color light_gray = {200, 200, 200, 255};
+SDL_Color grayer = {150, 150, 150, 255};
+SDL_Color deep_green = {0, 180, 0, 255};
+
 
 SDL_Texture* loadtexture(const string &path, SDL_Renderer *renderer) {
     SDL_Surface* surface = IMG_Load(path.c_str());
@@ -61,5 +64,24 @@ SDL_Texture* loadtexture(const string &path, SDL_Renderer *renderer) {
     SDL_FreeSurface(surface);
     return texture;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif //GITTESTT_TEXTURES_H
