@@ -8,6 +8,7 @@
 #include "LookMenu.h"
 #include "SoundMenu.h"
 #include "Control.h"
+#include "CostumesTab.h"
 
 int main( int argc, char * argv[] ) {
     Uint32 SDL_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER |SDL_INIT_AUDIO;
@@ -142,6 +143,10 @@ int main( int argc, char * argv[] ) {
     //add pen
 
 
+
+
+    Board costumeboard;
+    costumeboard.initcostume(m_renderer,400 , 150 , 600 , 500);
 
     //under customs buttons
     int r2 = int(1.4 * r);
@@ -1221,6 +1226,10 @@ int main( int argc, char * argv[] ) {
                 }
             }
 
+            if (clicked_costumes_menu)
+            {
+                costumeboard.handleclicked(e,m_renderer);
+            }
 
 
         }
@@ -1630,6 +1639,9 @@ int main( int argc, char * argv[] ) {
             SDL_RenderCopy(m_renderer, upload_image_tex, nullptr, &upload_image_rect);
 
 
+            costumeboard.rendercostume(m_renderer);
+
+            SDL_RenderPresent(m_renderer);
 
 
         }
@@ -1808,7 +1820,6 @@ int main( int argc, char * argv[] ) {
 
 
         }
-
 
 
 
