@@ -12,7 +12,8 @@ add_executable(gittestt main.cpp
         Motion.h
         LookMenu.h
         SoundMenu.h
-        blockArrangement.h)
+        blockArrangement.h
+        CostumesTab.h)
 
 
 target_link_libraries(${PROJECT_NAME} -lconio)
